@@ -9,7 +9,7 @@ WHERE {
     ?relatedArtwork
         aw:artist ?diffArtist; 
         aw:art_genre ?genre;
-        aw:art_form ?diffForm.
+        aw:art_form ?form.
     FILTER(?diffArtist != ?artist).
-    FILTER(?diffForm != ?form).
-}
+    OPTIONAL {?relatedArtwork aw:date_completed ?date}
+} ORDER BY ?date

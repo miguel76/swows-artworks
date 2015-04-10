@@ -2,14 +2,34 @@
 				@prefix df: <http://www.swows.org/dataflow#> . 
 				@prefix swi: <http://www.swows.org/instance#> . 
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
-			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
   ?s ?p ?o .
 }
 WHERE {
   GRAPH <#touchEvent> {
     ?s ?p ?o .
   }
-}''' .swi:OutputDataset a df:InlineDataset ; df:input <#TuplesOutput>  . <#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
+}''' .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
+PREFIX fb: <http://rdf.freebase.com/ns/>
+
+INSERT {
+  <#global> <#selectedArtwork> fb:m.063j6x5.
+}
+WHERE {
+  NOT EXISTS {<#global> <#selectedArtwork> ?selected}
+};
+
+DELETE { <#global> <#selectedArtwork> ?oldSelected }
+INSERT { <#global> <#selectedArtwork> ?newSelected }
+WHERE {
+  <#global> <#selectedArtwork> ?oldSelected.
+  GRAPH <#event> {
+    ?event
+      a evt:Event ;
+      evt:type "click" ;
+      evt:target ?newSelected .
+  }
+};''' .<#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
 PREFIX fb: <http://rdf.freebase.com/ns/>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
 PREFIX dbp-ont: <http://dbpedia.org/ontology/>
@@ -37,7 +57,17 @@ WHERE {
 CONSTRUCT{
   <#global> <#selectedArtwork> fb:m.063j6x5.
 }
-WHERE{}''' .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelectedArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+WHERE{}''' .<#SelectTest> a df:ConstructGraph ;df:name "SelectTest" ;df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
+
+SELECT ?x ?y
+WHERE {
+  VALUES (?x ?y) {
+  (3 12)
+  (1 4)
+  (2 8)
+  }
+} ORDER BY ?x
+''' .<#Framing> a df:ConstructGraph ;df:name "Framing" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -51,7 +81,22 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ff: <http://factforge.net/>
 PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
 
+PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
+
 CONSTRUCT {
+
+  <>
+    <#padding> ?padding;
+    <#smallImagesWidth> ?smallImagesWidth;
+    <#smallImagesHeight> ?smallImagesHeight;
+    <#windowWidth> ?windowWidth;
+    <#windowHeight> ?windowHeight;
+    <#topBarX> ?topBarX;
+    <#topBarY> ?topBarY;
+    <#topBarWidth> ?topBarWidth;
+    <#bottomBarWidth> ?bottomBarWidth;
+    <#leftBarHeight> ?leftBarHeight;
+    <#rightBarHeight> ?rightBarHeight.
 
   <#svgDoc>
     a xml:Document ;
@@ -62,7 +107,6 @@ CONSTRUCT {
     nn:version "1.1" ;
     nn:width ?windowWidth ;
     nn:height ?windowHeight ;
-    xml:listenedEventType "touchstart", "touchmove", "touchend";
     xml:hasChild <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
 
   <#centralImage>
@@ -70,8 +114,7 @@ CONSTRUCT {
     nn:x ?centralImageX ;
     nn:y ?centralImageY ;
     nn:width ?centralImageWidth ;
-    nn:height ?centralImageHeight ;
-    xlink:href ?mainImageURI .
+    nn:height ?centralImageHeight .
 
   <#infoBox> 
     a svg:g;
@@ -82,59 +125,53 @@ CONSTRUCT {
     nn:x ?infoBoxX ;
     nn:y ?infoBoxNameY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?nameStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#infoBoxArtist>
     a svg:text ;
     nn:x ?infoBoxX ;
     nn:y ?infoBoxArtistY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?artistStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#infoBoxArtForm>
     a svg:text ;
     nn:x ?infoBoxX ;
     nn:y ?infoBoxArtFormY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?artFormStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#infoBoxArtGenre>
     a svg:text ;
     nn:x ?infoBoxX ;
     nn:y ?infoBoxArtGenreY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?artGenreStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#infoBoxArtSubject>
     a svg:text ;
     nn:x ?infoBoxX ;
     nn:y ?infoBoxArtSubjectY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?artSubjectStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#infoBoxDate>
     a svg:text ;
     nn:x ?infoBoxX ;
     nn:y ?infoBoxDateY ;
     nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight ;
-    xml:textContent ?dateStr .
+    nn:height ?infoBoxFieldHeight .
 
   <#topBar> 
-    a svg:g;
-    xml:hasChild <#topRect>.
+    a svg:g.
+#    xml:hasChild <#topRect>.
 
-  <#topRect> 
-    a svg:rect;
-    nn:x ?topBarX ;
-    nn:y ?topBarY ;
-    nn:width ?topBarWidth ;
-    nn:height ?topBarHeight .
+#  <#topRect> 
+#    a svg:rect;
+#    nn:x ?topBarX ;
+#    nn:y ?topBarY ;
+#    nn:width ?topBarWidth ;
+#    nn:height ?topBarHeight .
 
   <#bottomBar> 
     a svg:g;
@@ -171,7 +208,6 @@ CONSTRUCT {
 
 }
 WHERE {
-  BIND('en' as ?language).
   BIND(1000 as ?windowWidth).
   BIND(600 as ?windowHeight).
   BIND(10 as ?padding).
@@ -225,6 +261,73 @@ WHERE {
   BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).
   BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
 
+}
+''' .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "DiffArtist" ; df:input <#DifferentArtist> ; df:id <#diffArtist> ];df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
+PREFIX svg:   <http://www.w3.org/2000/svg#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
+
+CONSTRUCT {
+
+  <#centralImage> xlink:href ?mainImageURI .
+
+  <#infoBoxName> xml:textContent ?nameStr .
+  <#infoBoxArtist> xml:textContent ?artistStr .
+  <#infoBoxArtForm> xml:textContent ?artFormStr .
+  <#infoBoxArtGenre> xml:textContent ?artGenreStr .
+  <#infoBoxArtSubject> xml:textContent ?artSubjectStr .
+  <#infoBoxDate> xml:textContent ?dateStr .
+
+  <#topBar> xml:hasChild ?daArtwork .
+
+#    xml:listenedEventType "touchstart", "touchmove", "touchend";
+
+
+#  ?topImage
+  ?daArtwork
+    a svg:image ;
+    nn:x ?topBarImageX ;
+    nn:y ?topBarY ;
+    nn:width ?smallImagesWidth ;
+    nn:height ?smallImagesHeight ;
+    xml:listenedEventType "click";
+    xlink:href ?daImageIRI .
+    
+
+#  <#bottomBar> 
+#  <#leftBar> 
+#  <#rightBar> 
+
+}
+WHERE {
+  BIND('en' as ?language).
+ 
+  GRAPH <#framing> {
+    <>
+      <#padding> ?padding;
+      <#smallImagesWidth> ?smallImagesWidth;
+      <#smallImagesHeight> ?smallImagesHeight;
+      <#windowWidth> ?windowWidth;
+      <#windowHeight> ?windowHeight;
+      <#topBarX> ?topBarX;
+      <#topBarY> ?topBarY;
+      <#topBarWidth> ?topBarWidth;
+      <#bottomBarWidth> ?bottomBarWidth;
+      <#leftBarHeight> ?leftBarHeight;
+      <#rightBarHeight> ?rightBarHeight.
+  }
+
   BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).
   BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).
   BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).
@@ -234,6 +337,30 @@ WHERE {
     <#global> <#selectedArtwork> ?selectedArtwork.
   }
 
+#  BIND(0 as ?daArtworkIndex).
+
+  GRAPH <#diffArtist> {
+    {
+      SELECT (COUNT(DISTINCT ?result) AS ?daNum)
+      WHERE {
+        ?result a sparql-res:result.
+      }
+    }
+    ?result
+      a sparql-res:result;
+      xml:orderKey ?daArtworkIndexStr;
+      xml:hasChild ?binding.
+    ?binding
+      a sparql-res:binding;
+      xml:hasChild/xml:hasChild/xml:nodeValue ?daArtworkStr.
+  }
+
+  BIND(xsd:integer(?daArtworkIndexStr) AS ?daArtworkIndex).
+  BIND((?topBarWidth-?smallImagesWidth*?daNum)/(?daNum+1) AS ?topBarPadding).
+  BIND(?topBarX+(?daArtworkIndex+1)*?topBarPadding+?daArtworkIndex*?smallImagesWidth AS ?topBarImageX).
+
+  BIND(IRI(?daArtworkStr) AS ?daArtwork) .
+
   SERVICE <http://factforge.net/sparql> {
     ?selectedArtwork
       fb:common.topic.image ?mainImage ;
@@ -241,9 +368,13 @@ WHERE {
       fb:visual_art.artwork.artist ?artist ;
       fb:visual_art.artwork.date_completed ?date_completed ;
       fb:visual_art.artwork.art_form ?art_form ;
-      fb:visual_art.artwork.art_genre ?art_genre ;
-      fb:visual_art.artwork.art_subject ?art_subject ;
-      fb:common.topic.description ?mainDescription .
+      fb:visual_art.artwork.art_genre ?art_genre .
+    OPTIONAL {
+      ?selectedArtwork fb:visual_art.artwork.art_subject ?art_subject.
+      ?art_subject fb:type.object.name ?artSubjectName.
+      FILTER (lang(?artSubjectName) = ?language).
+    }.
+#      fb:common.topic.description ?mainDescription .
     ?mainImage
 	fb:type.content.source ?mainImageSource ;
     	fb:common.image.size ?size .
@@ -255,26 +386,28 @@ WHERE {
       fb:type.object.name ?artistName .
     ?art_form fb:type.object.name ?artFormName .
     ?art_genre fb:type.object.name ?artGenreName .
-    ?art_subject fb:type.object.name ?artSubjectName .
+    
     FILTER ( lang(?name) = ?language ).
     FILTER ( lang(?artistName) = ?language ).
     FILTER ( lang(?artFormName) = ?language ).
     FILTER ( lang(?artGenreName) = ?language ).
-    FILTER ( lang(?artSubjectName) = ?language ).
+    
 #    FILTER langMatches( lang(?artistName), ?language ) .
 
-    OPTIONAL {
-      ?diffArtistArtwork
-        fb:common.topic.image/fb:type.content.source ?da_ImageSource ;
-        fb:visual_art.artwork.artist ?da_artist ;
-        fb:visual_art.artwork.date_completed ?date_completed ;
-        fb:visual_art.artwork.art_form ?art_form ;
-        fb:visual_art.artwork.art_genre ?art_genre .
-      
-      FILTER(?diffArtistArtwork != ?selectedArtwork).
-    }
+#     ?daArtwork ?p ?o .
+
+#    OPTIONAL {
+      ?daArtwork fb:common.topic.image/fb:type.content.source/fb:type.content_import.uri ?daImageIRI.
+#    }
 
   }
+
+#  SERVICE <http://factforge.net/sparql> {
+#    OPTIONAL {
+#      ?da_artwork fb:common.topic.image ?da_image .
+#      ?da_image fb:type.content.source ?da_ImageSource.
+#    }
+#  }
 
   BIND(CONCAT('Name: ',?name) AS ?nameStr).
   BIND(CONCAT('Artist: ',?artistName) AS ?artistStr).
@@ -283,46 +416,7 @@ WHERE {
   BIND(CONCAT('Subject: ',?artSubjectName) AS ?artSubjectStr).
   BIND(CONCAT('Date: ',?date_completed) AS ?dateStr).
 }
-''' .<#DifferentArtist> a df:ConstructGraph ;df:name "DifferentArtist" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelectedArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-
-SELECT ?diffArtistArtwork
-WHERE {
-  GRAPH <#selected> {
-    <#global> <#selectedArtwork> ?selectedArtwork.
-  }
-
-  SERVICE <http://factforge.net/sparql> {
-    ?selectedArtwork
-      fb:type.object.name ?name ;
-      fb:visual_art.artwork.artist ?artist ;
-      fb:visual_art.artwork.date_completed ?date_completed ;
-      fb:visual_art.artwork.art_form ?art_form ;
-      fb:visual_art.artwork.art_genre ?art_genre ;
-      fb:visual_art.artwork.art_subject ?art_subject ;
-      fb:common.topic.description ?mainDescription .
-
-    ?diffArtistArtwork
-      fb:common.topic.image/fb:type.content.source ?da_ImageSource ;
-      fb:visual_art.artwork.artist ?da_artist ;
-#      fb:visual_art.artwork.date_completed ?date_completed ;
-      fb:visual_art.artwork.art_form ?art_form ;
-      fb:visual_art.artwork.art_genre ?art_genre .
-      
-    FILTER(?diffArtistArtwork != ?selectedArtwork).
-  }
-}
-LIMIT 10
-''' .<#SelectTest> a df:ConstructGraph ;df:name "SelectTest" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelectedArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-
-SELECT ?x ?y
-WHERE {
-  VALUES (?x ?y) {
-  (3 12)
-  (1 4)
-  (2 8)
-  }
-} ORDER BY ?x
-''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#SelectTest> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#DifferentArtist> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -360,7 +454,8 @@ CONSTRUCT {
 WHERE {
 
   {
-  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)
+  SELECT (GROUP_CONCAT(?tripleStr; separator='
+') AS ?triplesStr)
   WHERE {
     BIND(STR(<>) AS ?baseStr) .
     BIND(STRLEN(?baseStr) AS ?baseLen) .
@@ -377,7 +472,50 @@ WHERE {
   }
   }
  
-  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).
+  BIND(CONCAT('BASE <',STR(<>),'>
+',COALESCE(?triplesStr,'')) AS ?text).
 
 }
+''' .<#DifferentArtist> a df:ConstructGraph ;df:name "DifferentArtist" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?diffArtistArtwork
+WHERE {
+  GRAPH <#selected> {
+    <#global> <#selectedArtwork> ?selectedArtwork.
+
+  SERVICE <http://factforge.net/sparql> {
+    SELECT DISTINCT ?selectedArtwork ?diffArtistArtwork
+#    SELECT DISTINCT ?diffArtistArtwork
+    WHERE {
+    ?selectedArtwork
+      fb:type.object.name ?name ;
+      fb:visual_art.artwork.artist ?artist ;
+      fb:visual_art.artwork.date_completed ?date_completed ;
+      fb:visual_art.artwork.art_form ?art_form ;
+      fb:visual_art.artwork.art_genre ?art_genre .
+#      fb:visual_art.artwork.art_subject ?art_subject ;
+#      fb:common.topic.description ?mainDescription .
+
+    ?diffArtistArtwork
+      fb:common.topic.image/fb:type.content.source ?da_ImageSource ;
+      fb:visual_art.artwork.artist ?da_artist ;
+      fb:visual_art.artwork.date_completed ?da_date_completed ;
+      fb:visual_art.artwork.art_form ?art_form ;
+      fb:visual_art.artwork.art_genre ?art_genre .
+#      fb:visual_art.artwork.art_subject ?art_subject .
+      
+    FILTER(?da_artist != ?artist).
+#    FILTER NOT EXISTS {?diffArtistArtwork fb:visual_art.artwork.artist ?artist}.
+    FILTER(?diffArtistArtwork != ?selectedArtwork).
+    FILTER(STRSTARTS(STR(?diffArtistArtwork),STR(fb:m))).
+      BIND(ABS(xsd:integer(?da_date_completed-?date_completed)) AS ?dateDiff). 
+    }
+    ORDER BY ?dateDiff
+    LIMIT 5
+  }
+  }
+
+}
+
 ''' .

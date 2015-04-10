@@ -7,58 +7,79 @@
 		<inputdefault>.
 <components/1>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"230";
+		"468";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"486";
+		"560";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<outputdefault>.
 <components/2222>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"234";
+		"322";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"133";
+		"15";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
+<components/2223222>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"40";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"243";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<construct>.
+<components/22232232>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"164";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"145";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<updatable>.
+<components/2223223>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"46";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"440";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<union>.
 <components/222322>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"445";
+		"1059";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"235";
+		"58";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/22232>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"680";
+		"781";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"295";
+		"276";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/2223>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"763";
+		"583";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"81";
+		"53";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/222>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"679";
+		"680";
 	<http://www.swows.org/2013/09/pipeline#Y>
 		"449";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<updatable>.
 <components/22>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"436";
+		"1043";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"64";
+		"200";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/2>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"65";
+		"463";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"309";
+		"345";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 

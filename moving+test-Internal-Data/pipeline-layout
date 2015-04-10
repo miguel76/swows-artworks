@@ -1,0 +1,36 @@
+<components/0>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"45";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"58";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<inputdefault>.
+<components/1>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"440";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"337";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<outputdefault>.
+<components/222>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"680";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"201";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<updatable>.
+<components/22>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"469";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"53";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<construct>.
+<components/2>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"75";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"254";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<construct>.
+

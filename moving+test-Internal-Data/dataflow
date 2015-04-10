@@ -1,0 +1,277 @@
+
+				@prefix df: <http://www.swows.org/dataflow#> . 
+				@prefix swi: <http://www.swows.org/instance#> . 
+				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
+  ?s ?p ?o .
+}
+WHERE {
+  GRAPH <#touchEvent> {
+    ?s ?p ?o .
+  }
+}''' .swi:OutputDataset a df:InlineDataset ; df:input <#View>  . <#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT DISTINCT ?artwork ?image ?uri ?sizeX ?sizeY
+WHERE {
+    dbpedia:Amedeo_Modigliani fb:visual_art.visual_artist.artworks ?artwork .
+    ?artwork fb:common.topic.image ?image .
+    ?image
+		fb:type.content.source ?source ;
+    	fb:common.image.size ?size .
+    ?source fb:type.content_import.uri ?uri .
+    ?size
+        fb:measurement_unit.rect_size.x ?sizeX ;
+        fb:measurement_unit.rect_size.y ?sizeY .
+  	BIND(afn:sqrt(20000*?sizeX/?sizeY) AS ?newSizeX) .
+   	BIND(?newSizeX*?sizeY/?sizeX AS ?newSizeY) .
+	BIND(?newSizeX*?newSizeY AS ?newSizeTot) .
+}''' .<#View> a df:ConstructGraph ;df:name "View" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
+PREFIX svg:   <http://www.w3.org/2000/svg#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+PREFIX swi:   <http://www.swows.org/instance#>
+
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+CONSTRUCT {
+
+  <#svgDoc>
+    a xml:Document ;
+    xml:hasChild <#svgElem> .
+
+  <#svgElem>
+    a svg:svg ;
+    nn:version "1.1" ;
+    nn:width ?windowWidth ;
+    nn:height ?windowHeight ;
+    xml:listenedEventType "touchstart", "touchmove", "touchend";
+    xml:hasChild <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
+
+  <#centralImage>
+    a svg:image ;
+    nn:x ?centralImageX ;
+    nn:y ?centralImageY ;
+    nn:width ?centralImageWidth ;
+    nn:height ?centralImageHeight ;
+    xlink:href ?mainImageURI .
+
+  <#infoBox> 
+    a svg:g;
+    xml:hasChild <#infoBoxName>, <#infoBoxArtist>, <#infoBoxArtForm>, <#infoBoxArtGenre>, <#infoBoxArtSubject>, <#infoBoxDate>.
+
+  <#infoBoxName>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxNameY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?nameStr .
+
+  <#infoBoxArtist>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtistY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?artistStr .
+
+  <#infoBoxArtForm>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtFormY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?artFormStr .
+
+  <#infoBoxArtGenre>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtGenreY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?artGenreStr .
+
+  <#infoBoxArtSubject>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtSubjectY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?artSubjectStr .
+
+  <#infoBoxDate>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxDateY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight ;
+    xml:textContent ?dateStr .
+
+  <#topBar> 
+    a svg:g;
+    xml:hasChild <#topRect>.
+
+  <#topRect> 
+    a svg:rect;
+    nn:x ?topBarX ;
+    nn:y ?topBarY ;
+    nn:width ?topBarWidth ;
+    nn:height ?topBarHeight .
+
+  <#bottomBar> 
+    a svg:g;
+    xml:hasChild <#bottomRect>.
+
+  <#bottomRect> 
+    a svg:rect;
+    nn:x ?bottomBarX ;
+    nn:y ?bottomBarY ;
+    nn:width ?bottomBarWidth ;
+    nn:height ?bottomBarHeight .
+
+  <#leftBar> 
+    a svg:g;
+    xml:hasChild <#leftRect>.
+
+  <#leftRect> 
+    a svg:rect;
+    nn:x ?leftBarX ;
+    nn:y ?leftBarY ;
+    nn:width ?leftBarWidth ;
+    nn:height ?leftBarHeight .
+
+  <#rightBar> 
+    a svg:g;
+    xml:hasChild <#rightRect>.
+
+  <#rightRect> 
+    a svg:rect;
+    nn:x ?rightBarX ;
+    nn:y ?rightBarY ;
+    nn:width ?rightBarWidth ;
+    nn:height ?rightBarHeight .
+
+}
+WHERE {
+  BIND('en' as ?language).
+  BIND(1000 as ?windowWidth).
+  BIND(600 as ?windowHeight).
+  BIND(10 as ?padding).
+  BIND(100 as ?smallImagesWidth).
+  BIND(100 as ?smallImagesHeight).
+
+  BIND(?smallImagesHeight as ?topBarHeight).
+  BIND(?smallImagesHeight as ?bottomBarHeight).
+  BIND(?smallImagesWidth as ?leftBarWidth).
+  BIND(?smallImagesWidth as ?rightBarWidth).
+
+  BIND(?leftBarWidth+2*?padding AS ?centralPanelX).
+  BIND(?topBarHeight+2*?padding AS ?centralPanelY).
+  BIND(?windowWidth-?leftBarWidth-?rightBarWidth-4*?padding AS ?centralPanelWidth).
+  BIND(?windowHeight-?topBarHeight-?bottomBarHeight-4*?padding AS ?centralPanelHeight).
+
+  BIND(?centralPanelWidth AS ?topBarWidth).
+  BIND(?centralPanelWidth AS ?bottomBarWidth).
+
+  BIND(?centralPanelX AS ?topBarX).
+  BIND(?padding AS ?topBarY).
+  BIND(?centralPanelX AS ?bottomBarX).
+  BIND(?centralPanelY+?centralPanelHeight+?padding AS ?bottomBarY).
+
+  BIND(?windowHeight-2*?padding AS ?leftBarHeight).
+  BIND(?windowHeight-2*?padding AS ?rightBarHeight).
+
+  BIND(?padding AS ?leftBarX).
+  BIND(?padding AS ?leftBarY).
+  BIND(?centralPanelX+?centralPanelWidth+?padding AS ?rightBarX).
+  BIND(?padding AS ?rightBarY).
+
+  BIND(250 as ?infoBoxWidth).
+#  BIND(80 as ?infoBoxHeight).
+  BIND(25 as ?infoBoxFieldHeight).
+
+  BIND(?centralPanelX+?infoBoxWidth AS ?centralImageX).
+  BIND(?centralPanelY AS ?centralImageY).
+  BIND(?centralPanelWidth-?infoBoxWidth AS ?centralImageWidth).
+  BIND(?centralPanelHeight AS ?centralImageHeight).
+
+  BIND(?centralPanelX AS ?infoBoxX).
+  BIND(?centralImageY AS ?infoBoxY).
+#  BIND(?centralPanelWidth AS ?infoBoxWidth).
+  BIND(?centralPanelHeight AS ?infoBoxHeight).
+
+  BIND(?infoBoxY+?infoBoxFieldHeight AS ?infoBoxNameY).
+  BIND(?infoBoxY+2*?infoBoxFieldHeight AS ?infoBoxArtistY).
+  BIND(?infoBoxY+3*?infoBoxFieldHeight AS ?infoBoxArtFormY).
+  BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).
+  BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).
+  BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
+
+  BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).
+  BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).
+  BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).
+  BIND(FLOOR((?rightBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numRightImages).
+
+  SERVICE <http://factforge.net/sparql> {
+    fb:m.063j6x5
+      fb:common.topic.image ?mainImage ;
+      fb:type.object.name ?name ;
+      fb:visual_art.artwork.artist ?artist ;
+      fb:visual_art.artwork.date_completed ?date_completed ;
+      fb:visual_art.artwork.art_form ?art_form ;
+      fb:visual_art.artwork.art_genre ?art_genre ;
+      fb:visual_art.artwork.art_subject ?art_subject ;
+      fb:common.topic.description ?mainDescription .
+    ?mainImage
+	fb:type.content.source ?mainImageSource ;
+    	fb:common.image.size ?size .
+    ?mainImageSource fb:type.content_import.uri ?mainImageURI .
+    ?size
+        fb:measurement_unit.rect_size.x ?sizeX ;
+        fb:measurement_unit.rect_size.y ?sizeY .
+    ?artist
+      fb:type.object.name ?artistName .
+    ?art_form fb:type.object.name ?artFormName .
+    ?art_genre fb:type.object.name ?artGenreName .
+    ?art_subject fb:type.object.name ?artSubjectName .
+    FILTER ( lang(?name) = ?language ).
+    FILTER ( lang(?artistName) = ?language ).
+    FILTER ( lang(?artFormName) = ?language ).
+    FILTER ( lang(?artGenreName) = ?language ).
+    FILTER ( lang(?artSubjectName) = ?language ).
+#    FILTER langMatches( lang(?artistName), ?language ) .
+
+    OPTIONAL {
+      ?diffArtistArtwork
+        fb:common.topic.image/fb:type.content.source ?da_ImageSource ;
+        fb:visual_art.artwork.artist ?da_artist ;
+        fb:visual_art.artwork.date_completed ?date_completed ;
+        fb:visual_art.artwork.art_form ?art_form ;
+        fb:visual_art.artwork.art_genre ?art_genre .
+      
+      FILTER(?diffArtistArtwork != fb:m.063j6x5).
+    }
+
+  }
+
+  BIND(CONCAT('Name: ',?name) AS ?nameStr).
+  BIND(CONCAT('Artist: ',?artistName) AS ?artistStr).
+  BIND(CONCAT('Form: ',?artFormName) AS ?artFormStr).
+  BIND(CONCAT('Genre: ',?artGenreName) AS ?artGenreStr).
+  BIND(CONCAT('Subject: ',?artSubjectName) AS ?artSubjectStr).
+  BIND(CONCAT('Date: ',?date_completed) AS ?dateStr).
+}
+''' .

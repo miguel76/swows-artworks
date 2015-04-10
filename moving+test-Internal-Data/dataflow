@@ -2,35 +2,7 @@
 				@prefix df: <http://www.swows.org/dataflow#> . 
 				@prefix swi: <http://www.swows.org/instance#> . 
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
-			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
-  ?s ?p ?o .
-}
-WHERE {
-  GRAPH <#touchEvent> {
-    ?s ?p ?o .
-  }
-}''' .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
-PREFIX fb: <http://rdf.freebase.com/ns/>
-
-INSERT {
-#  <#global> <#selectedArtwork> fb:m.07g8ybw.
-  <#global> <#selectedArtwork> fb:m.063j6x5.
-}
-WHERE {
-  NOT EXISTS {<#global> <#selectedArtwork> ?selected}
-};
-
-DELETE { <#global> <#selectedArtwork> ?oldSelected }
-INSERT { <#global> <#selectedArtwork> ?newSelected }
-WHERE {
-  <#global> <#selectedArtwork> ?oldSelected.
-  GRAPH <#event> {
-    ?event
-      a evt:Event ;
-      evt:type "click" ;
-      evt:toElement ?newSelected .
-  }
-};''' .<#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
 PREFIX fb: <http://rdf.freebase.com/ns/>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
 PREFIX dbp-ont: <http://dbpedia.org/ontology/>
@@ -266,66 +238,6 @@ WHERE {
   BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).
   BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).
   BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
-
-}
-''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#RelatedArtwork> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
-PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
-PREFIX svg:   <http://www.w3.org/2000/svg#>
-PREFIX xlink: <http://www.w3.org/1999/xlink#>
-PREFIX swi:   <http://www.swows.org/instance#>
-PREFIX html:  <http://www.w3.org/1999/xhtml#>
-
-PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-ont: <http://dbpedia.org/ontology/>
-PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ff: <http://factforge.net/>
-PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
-
-CONSTRUCT {
-
-  <#svgDoc>
-    a xml:Document ;
-    xml:hasChild <#htmlElem> .
-
-  <#htmlElem>
-    a html:html ;
-    xml:hasChild <#body> .
-
-  <#body>
-    a html:body ;
-    xml:hasChild <#textArea> .
-
-  <#textArea>
-    a html:textarea ;
-    nn:style "width: 100%; height:100%";
-    xml:textContent ?text .
-
-}
-WHERE {
-
-  {
-  SELECT (GROUP_CONCAT(?tripleStr; separator='
-') AS ?triplesStr)
-  WHERE {
-    BIND(STR(<>) AS ?baseStr) .
-    BIND(STRLEN(?baseStr) AS ?baseLen) .
-    GRAPH <#input> {
-      ?s ?p ?o .
-    } .
-    BIND(STR(?s) AS ?sStr).
-    BIND(IF(isBLANK(?s), CONCAT('_:',afn:bnode(?s)), CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>')) AS ?sOut).
-    BIND(STR(?p) AS ?pStr).
-    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).
-    BIND(STR(?o) AS ?oStr).
-    BIND(IF(isBLANK(?o), CONCAT('_:',afn:bnode(?o)), IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('"', STR(?o), '"'))) ) AS ?oOut).
-    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).
-  }
-  }
- 
-  BIND(CONCAT('BASE <',STR(<>),'>
-',COALESCE(?triplesStr,'')) AS ?text).
 
 }
 ''' .<#AreaFilters> a df:ConstructGraph ;df:name "AreaFilters" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
@@ -631,4 +543,92 @@ WHERE {
 }
 ORDER BY ?area
 LIMIT 40
-''' .
+''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#RelatedArtwork> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
+PREFIX svg:   <http://www.w3.org/2000/svg#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+PREFIX swi:   <http://www.swows.org/instance#>
+PREFIX html:  <http://www.w3.org/1999/xhtml#>
+
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+CONSTRUCT {
+
+  <#svgDoc>
+    a xml:Document ;
+    xml:hasChild <#htmlElem> .
+
+  <#htmlElem>
+    a html:html ;
+    xml:hasChild <#body> .
+
+  <#body>
+    a html:body ;
+    xml:hasChild <#textArea> .
+
+  <#textArea>
+    a html:textarea ;
+    nn:style "width: 100%; height:100%";
+    xml:textContent ?text .
+
+}
+WHERE {
+
+  {
+  SELECT (GROUP_CONCAT(?tripleStr; separator='
+') AS ?triplesStr)
+  WHERE {
+    BIND(STR(<>) AS ?baseStr) .
+    BIND(STRLEN(?baseStr) AS ?baseLen) .
+    GRAPH <#input> {
+      ?s ?p ?o .
+    } .
+    BIND(STR(?s) AS ?sStr).
+    BIND(IF(isBLANK(?s), CONCAT('_:',afn:bnode(?s)), CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>')) AS ?sOut).
+    BIND(STR(?p) AS ?pStr).
+    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).
+    BIND(STR(?o) AS ?oStr).
+    BIND(IF(isBLANK(?o), CONCAT('_:',afn:bnode(?o)), IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('"', STR(?o), '"'))) ) AS ?oOut).
+    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).
+  }
+  }
+ 
+  BIND(CONCAT('BASE <',STR(<>),'>
+',COALESCE(?triplesStr,'')) AS ?text).
+
+}
+''' .<#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
+  ?s ?p ?o .
+}
+WHERE {
+  GRAPH <#touchEvent> {
+    ?s ?p ?o .
+  }
+}''' .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
+PREFIX fb: <http://rdf.freebase.com/ns/>
+
+INSERT {
+#  <#global> <#selectedArtwork> fb:m.07g8ybw.
+  <#global> <#selectedArtwork> fb:m.063j6x5.
+}
+WHERE {
+  NOT EXISTS {<#global> <#selectedArtwork> ?selected}
+};
+
+DELETE { <#global> <#selectedArtwork> ?oldSelected }
+INSERT { <#global> <#selectedArtwork> ?newSelected }
+WHERE {
+  <#global> <#selectedArtwork> ?oldSelected.
+  GRAPH <#event> {
+    ?event
+      a evt:Event ;
+      evt:type "click" ;
+      evt:toElement ?newSelected .
+  }
+};''' .<#relartwork.rq> a df:IncludedGraph ;df:url <relartwork.rq> ;df:name "RelArtworkQuery" .

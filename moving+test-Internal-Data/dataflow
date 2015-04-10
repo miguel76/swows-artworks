@@ -2,7 +2,7 @@
 				@prefix df: <http://www.swows.org/dataflow#> . 
 				@prefix swi: <http://www.swows.org/instance#> . 
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
-			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
   ?s ?p ?o .
 }
 WHERE {
@@ -13,6 +13,7 @@ WHERE {
 PREFIX fb: <http://rdf.freebase.com/ns/>
 
 INSERT {
+#  <#global> <#selectedArtwork> fb:m.07g8ybw.
   <#global> <#selectedArtwork> fb:m.063j6x5.
 }
 WHERE {
@@ -27,9 +28,9 @@ WHERE {
     ?event
       a evt:Event ;
       evt:type "click" ;
-      evt:target ?newSelected .
+      evt:toElement ?newSelected .
   }
-};''' .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
+};''' .<#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
 PREFIX fb: <http://rdf.freebase.com/ns/>
 PREFIX dbpedia: <http://dbpedia.org/resource/>
 PREFIX dbp-ont: <http://dbpedia.org/ontology/>
@@ -90,13 +91,7 @@ CONSTRUCT {
     <#smallImagesWidth> ?smallImagesWidth;
     <#smallImagesHeight> ?smallImagesHeight;
     <#windowWidth> ?windowWidth;
-    <#windowHeight> ?windowHeight;
-#    <#topBarX> ?topBarX;
-#    <#topBarY> ?topBarY;
-#    <#topBarWidth> ?topBarWidth;
-    <#bottomBarWidth> ?bottomBarWidth;
-    <#leftBarHeight> ?leftBarHeight;
-    <#rightBarHeight> ?rightBarHeight.
+    <#windowHeight> ?windowHeight.
 
   <#svgDoc>
     a xml:Document ;
@@ -107,7 +102,9 @@ CONSTRUCT {
     nn:version "1.1" ;
     nn:width ?windowWidth ;
     nn:height ?windowHeight ;
-    xml:hasChild <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
+    xml:hasChild <#defs>, <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
+
+  <#defs> a svg:defs.
 
   <#centralImage>
     a svg:image ;
@@ -173,47 +170,42 @@ CONSTRUCT {
     <#height> ?topBarHeight;
     <#cols> ?numTopImages;
     <#rows> 1.
-#    xml:hasChild <#topRect>.
 
-#  <#topRect> 
-#    a svg:rect;
-#    nn:x ?topBarX ;
-#    nn:y ?topBarY ;
-#    nn:width ?topBarWidth ;
-#    nn:height ?topBarHeight .
+  <#bottomBar> a svg:g.
 
-  <#bottomBar> 
-    a svg:g;
-    xml:hasChild <#bottomRect>.
+  <#bottomBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#bottomBar>;
+    <#x> ?bottomBarX;
+    <#y> ?bottomBarY;
+    <#width> ?bottomBarWidth;
+    <#height> ?bottomBarHeight;
+    <#cols> ?numBottomImages;
+    <#rows> 1.
 
-  <#bottomRect> 
-    a svg:rect;
-    nn:x ?bottomBarX ;
-    nn:y ?bottomBarY ;
-    nn:width ?bottomBarWidth ;
-    nn:height ?bottomBarHeight .
+  <#leftBar> a svg:g.
 
-  <#leftBar> 
-    a svg:g;
-    xml:hasChild <#leftRect>.
+  <#leftBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#leftBar>;
+    <#x> ?leftBarX;
+    <#y> ?leftBarY;
+    <#width> ?leftBarWidth;
+    <#height> ?leftBarHeight;
+    <#cols> 1;
+    <#rows> ?numLeftImages.
 
-  <#leftRect> 
-    a svg:rect;
-    nn:x ?leftBarX ;
-    nn:y ?leftBarY ;
-    nn:width ?leftBarWidth ;
-    nn:height ?leftBarHeight .
+  <#rightBar> a svg:g.
 
-  <#rightBar> 
-    a svg:g;
-    xml:hasChild <#rightRect>.
-
-  <#rightRect> 
-    a svg:rect;
-    nn:x ?rightBarX ;
-    nn:y ?rightBarY ;
-    nn:width ?rightBarWidth ;
-    nn:height ?rightBarHeight .
+  <#rightBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#rightBar>;
+    <#x> ?rightBarX;
+    <#y> ?rightBarY;
+    <#width> ?rightBarWidth;
+    <#height> ?rightBarHeight;
+    <#cols> 1;
+    <#rows> ?numRightImages.
 
 }
 WHERE {
@@ -276,97 +268,6 @@ WHERE {
   BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
 
 }
-''' .<#AreaFilters> a df:ConstructGraph ;df:name "AreaFilters" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
-PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
-PREFIX svg:   <http://www.w3.org/2000/svg#>
-PREFIX xlink: <http://www.w3.org/1999/xlink#>
-
-PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-ont: <http://dbpedia.org/ontology/>
-PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ff: <http://factforge.net/>
-PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
-
-PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
-
-CONSTRUCT {
-  <#topBarArea>
-    a <#ImageArea>;
-    <#filter> <#topBarFilter>.
-  <#topBarFilter>
-    <#equalValProp>
-      fb:visual_art.artwork.art_form,
-      fb:visual_art.artwork.art_genre;
-    <#diffValProp>
-      fb:visual_art.artwork.artist;
-    <#orderProps>
-      ().
-}
-WHERE {
-}
-''' .<#RelatedArtwork> a df:ConstructGraph ;df:name "RelatedArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "AreaFilters" ; df:input <#AreaFilters> ; df:id <#areaFilters> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-SELECT DISTINCT ?area ?relatedArtwork
-WHERE {
-
-  GRAPH <#selected> {
-    <#global> <#selectedArtwork> ?selectedArtwork.
-  }
-
-  GRAPH <#areaFilters> {
-    ?area
-      a <#ImageArea>;
-      <#filter> ?filter.
-#    ?filter
-#      <#equalValProp> ?equalValProp;
-#      <#diffValProp> ?diffValProp;
-#      <#orderProps> ?orderProps.
-  
-    {
-      SELECT
-        ?filter
-        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
-      WHERE {
-        ?filter <#equalValProp> ?equalValProp.
-      } GROUP BY ?filter
-    }
-
-    {
-      SELECT
-        ?filter ?selectedArtwork ?relatedArtwork
-        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
-      WHERE {
-        ?filter <#equalValProp> ?equalValProp.
-
-        SERVICE <http://factforge.net/sparql> {
-          SELECT DISTINCT ?equalValProp ?selectedArtwork ?relatedArtwork
-          WHERE {
-
-            ?selectedArtwork ?equalValProp ?equalValPropValue.
-
-            ?relatedArtwork
-              a fb:visual_art.artwork;
-              fb:common.topic.image/fb:type.content.source ?da_ImageSource;
-              ?equalValProp ?equalValPropValue.
-
-            FILTER(?relatedArtwork != ?selectedArtwork).
-            FILTER(STRSTARTS(STR(?relatedArtwork),STR(fb:m))).
-
-          }
-        }
-#        BIND(ABS(xsd:integer(?da_date_completed-?date_completed)) AS ?dateDiff). 
-
-      }
-      GROUP BY ?filter ?selectedArtwork ?relatedArtwork
-#      ORDER BY ?dateDiff
-    }
-  }
-}
-ORDER BY ?area
-LIMIT 7
 ''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#RelatedArtwork> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
@@ -405,7 +306,8 @@ CONSTRUCT {
 WHERE {
 
   {
-  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)
+  SELECT (GROUP_CONCAT(?tripleStr; separator='
+') AS ?triplesStr)
   WHERE {
     BIND(STR(<>) AS ?baseStr) .
     BIND(STRLEN(?baseStr) AS ?baseLen) .
@@ -422,10 +324,63 @@ WHERE {
   }
   }
  
-  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).
+  BIND(CONCAT('BASE <',STR(<>),'>
+',COALESCE(?triplesStr,'')) AS ?text).
 
 }
-''' .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "DiffArtist" ; df:input <#RelatedArtwork> ; df:id <#diffArtist> ];df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+''' .<#AreaFilters> a df:ConstructGraph ;df:name "AreaFilters" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
+PREFIX svg:   <http://www.w3.org/2000/svg#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
+
+CONSTRUCT {
+  <#topBarArea>
+    a <#ImageArea>;
+    <#filter> <#topBarFilter>.
+  <#topBarFilter>
+    <#equalValProp>
+      fb:visual_art.artwork.art_form,
+      fb:visual_art.artwork.art_genre;
+    <#diffValProp>
+      fb:visual_art.artwork.artist.
+  <#bottomBarArea>
+    a <#ImageArea>;
+    <#filter> <#bottomBarFilter>.
+  <#bottomBarFilter>
+    <#equalValProp>
+      fb:visual_art.artwork.artist.
+  <#leftBarArea>
+    a <#ImageArea>;
+    <#filter> <#leftBarFilter>.
+  <#leftBarFilter>
+    <#equalValProp>
+      fb:visual_art.artwork.artist,
+      fb:visual_art.artwork.art_genre;
+    <#diffValProp>
+      fb:visual_art.artwork.art_form.
+  <#rightBarArea>
+    a <#ImageArea>;
+    <#filter> <#rightBarFilter>.
+  <#rightBarFilter>
+    <#equalValProp>
+      fb:visual_art.artwork.artist,
+      fb:visual_art.artwork.art_form;
+    <#diffValProp>
+      fb:visual_art.artwork.art_genre.
+}
+WHERE {
+}
+''' .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];df:namedInput [a df:NamedGraph ; df:name "RelArtwork" ; df:input <#RelatedArtwork> ; df:id <#relArtwork> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -452,25 +407,26 @@ CONSTRUCT {
   <#infoBoxArtSubject> xml:textContent ?artSubjectStr .
   <#infoBoxDate> xml:textContent ?dateStr .
 
-  <#topBar> xml:hasChild ?relArtwork .
+  ?svgArea xml:hasChild ?relArtworkInstance .
 
-#    xml:listenedEventType "touchstart", "touchmove", "touchend";
+  ?relArtworkInstance
+    a svg:use ;
+    nn:x ?areaImageX ;
+    nn:y ?areaImageY ;
+#    xlink:href ?relArtworkRef .
+    xlink:href ?relArtwork .
 
+  <#defs> xml:hasChild ?relArtwork.
 
-#  ?topImage
   ?relArtwork
     a svg:image ;
-    nn:x ?topBarImageX ;
-    nn:y ?topBarY ;
+#    nn:id ?relArtworkId ;
+#    nn:x ?areaImageX ;
+#    nn:y ?areaImageY ;
     nn:width ?smallImagesWidth ;
     nn:height ?smallImagesHeight ;
     xml:listenedEventType "click";
     xlink:href ?relImageIRI .
-    
-
-#  <#bottomBar> 
-#  <#leftBar> 
-#  <#rightBar> 
 
 }
 WHERE {
@@ -483,24 +439,25 @@ WHERE {
       <#smallImagesHeight> ?smallImagesHeight;
       <#windowWidth> ?windowWidth;
       <#windowHeight> ?windowHeight.
-    <#topBarArea>
-      <#x> ?topBarX;
-      <#y> ?topBarY;
-      <#width> ?topBarWidth;
-      <#height> ?topBarHeight;
-      <#cols> ?areaSpaces.
+    ?relArea
+      <#svgElement> ?svgArea;
+      <#x> ?areaX;
+      <#y> ?areaY;
+      <#width> ?areaWidth;
+      <#height> ?areaHeight;
+      <#cols> ?areaCols;
+      <#rows> ?areaRows.
   }
+  BIND(?areaCols*?areaRows AS ?areaSpaces).
 
   GRAPH <#selected> {
     <#global> <#selectedArtwork> ?selectedArtwork.
   }
 
-#  BIND(0 as ?daArtworkIndex).
-
   GRAPH <#relArtwork> {
     {
       SELECT
-        ?relAreaStr
+        ?relArea
         (COUNT(DISTINCT ?result) AS ?areaAwNum)
         (MIN(xsd:integer(?relArtworkGenIndexStr)) AS ?areaMinAwIndex)
       WHERE {
@@ -508,14 +465,21 @@ WHERE {
         ?result
           a sparql-res:result;
           xml:orderKey ?relArtworkGenIndexStr;
-          xml:hasChild ?areaBinding.
+#          xml:hasChild ?areaBinding.
+      xml:hasChild ?areaBinding, ?awBinding.
         ?areaBinding
           a sparql-res:binding;
           nn:name "area";
           xml:hasChild/xml:hasChild/xml:nodeValue ?relAreaStr.
+        BIND(IRI(?relAreaStr) AS ?relArea).
+        ?awBinding
+          a sparql-res:binding;
+          nn:name "relatedArtwork";
+          xml:hasChild/xml:hasChild/xml:nodeValue ?relArtworkStr.
       }
-      GROUP BY ?relAreaStr
+      GROUP BY ?relArea
     }
+#    BIND(STR(?relArea) AS ?relAreaStr).
     ?result
       a sparql-res:result;
       xml:orderKey ?relArtworkGenIndexStr;
@@ -524,22 +488,37 @@ WHERE {
       a sparql-res:binding;
       nn:name "area";
       xml:hasChild/xml:hasChild/xml:nodeValue ?relAreaStr.
+    FILTER(IRI(?relAreaStr) = ?relArea).
     ?awBinding
       a sparql-res:binding;
       nn:name "relatedArtwork";
       xml:hasChild/xml:hasChild/xml:nodeValue ?relArtworkStr.
   }
 
-  BIND(IRI(?relAreaStr) AS ?relArea).
   BIND(xsd:integer(?relArtworkGenIndexStr) AS ?relArtworkGenIndex).
   BIND(?relArtworkGenIndex-?areaMinAwIndex AS ?relArtworkIndex).
-  BIND(IF(?areaAwNum>?areaSpaces,?areaSpaces,?areaAwNum) AS ?areaImagesNum).
-  BIND((?topBarWidth-?smallImagesWidth*?areaImagesNum)/(?areaImagesNum+1) AS ?topBarPadding).
-  BIND(?topBarX+(?relArtworkIndex+1)*?topBarPadding+?relArtworkIndex*?smallImagesWidth AS ?topBarImageX).
+  BIND(IF(?areaAwNum>?areaSpaces,?areaSpaces,?areaAwNum) AS ?areaImagesNumTemp).
+  BIND(1.0*?areaImagesNumTemp/?areaSpaces AS ?imageDensity).
+  BIND(CEIL(?imageDensity*?areaRows) AS ?imageRows).
+  BIND(CEIL(?imageDensity*?areaCols) AS ?imageCols).
+  BIND(?imageRows*?imageCols AS ?areaImagesNum).
+  BIND((?areaWidth-?smallImagesWidth*?imageCols)/(?imageCols+1) AS ?areaPaddingX).
+  BIND((?areaHeight-?smallImagesHeight*?imageRows)/(?imageRows+1) AS ?areaPaddingY).
+
+  FILTER(?relArtworkIndex < ?areaImagesNum).
+  BIND(FLOOR(?relArtworkIndex/?imageCols) AS ?relArtworkRow).
+  BIND(?relArtworkIndex-?relArtworkRow*?imageCols AS ?relArtworkCol).
+  BIND(?areaX+(?relArtworkCol+1)*?areaPaddingX+?relArtworkCol*?smallImagesWidth AS ?areaImageX).
+  BIND(?areaY+(?relArtworkRow+1)*?areaPaddingY+?relArtworkRow*?smallImagesHeight AS ?areaImageY).
 
   BIND(IRI(?relArtworkStr) AS ?relArtwork) .
+  BIND(IRI(CONCAT(STR(<#relArtworkInstance>),MD5(STR(?relArea)),MD5(STR(?relArtwork)))) AS ?relArtworkInstance).
+  BIND(CONCAT("aw",MD5(?relArtworkStr)) AS ?relArtworkId).
+  BIND(CONCAT("#",?relArtworkId) AS ?relArtworkRef).
 
-  SERVICE <http://factforge.net/sparql> {
+#  SERVICE <http://factforge.net/sparql> {
+#  SERVICE <http://moro.redi.uniroma1.it:8080/openrdf-sesame/repositories/testfb3> {
+  SERVICE <http://146.148.9.150/sparql> {
     ?selectedArtwork
       fb:common.topic.image ?mainImage ;
       fb:type.object.name ?name ;
@@ -580,13 +559,6 @@ WHERE {
 
   }
 
-#  SERVICE <http://factforge.net/sparql> {
-#    OPTIONAL {
-#      ?da_artwork fb:common.topic.image ?da_image .
-#      ?da_image fb:type.content.source ?da_ImageSource.
-#    }
-#  }
-
   BIND(CONCAT('Name: ',?name) AS ?nameStr).
   BIND(CONCAT('Artist: ',?artistName) AS ?artistStr).
   BIND(CONCAT('Form: ',?artFormName) AS ?artFormStr).
@@ -594,4 +566,69 @@ WHERE {
   BIND(CONCAT('Subject: ',?artSubjectName) AS ?artSubjectStr).
   BIND(CONCAT('Date: ',?date_completed) AS ?dateStr).
 }
+''' .<#RelatedArtwork> a df:ConstructGraph ;df:name "RelatedArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "AreaFilters" ; df:input <#AreaFilters> ; df:id <#areaFilters> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?area ?relatedArtwork
+WHERE {
+
+  GRAPH <#selected> {
+    <#global> <#selectedArtwork> ?selectedArtwork.
+  }
+
+  GRAPH <#areaFilters> {
+    ?area
+      a <#ImageArea>;
+      <#filter> ?filter.
+#    ?filter
+#      <#equalValProp> ?equalValProp;
+#      <#diffValProp> ?diffValProp;
+#      <#orderProps> ?orderProps.
+  
+    {
+      SELECT
+        ?filter
+        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
+        (COUNT(DISTINCT ?diffValProp) AS ?diffCount)
+      WHERE {
+        OPTIONAL {?filter <#equalValProp> ?equalValProp}.
+        OPTIONAL {?filter <#diffValProp> ?diffValProp}.
+      } GROUP BY ?filter
+    }
+
+    {
+      SELECT
+        ?filter ?selectedArtwork ?relatedArtwork
+        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
+      WHERE {
+        ?filter <#equalValProp> ?equalValProp.
+
+#        SERVICE <http://moro.redi.uniroma1.it:8080/openrdf-sesame/repositories/testfb3> {
+#        SERVICE <http://factforge.net/sparql> {
+        SERVICE <http://146.148.9.150/sparql> {
+          SELECT DISTINCT ?equalValProp ?selectedArtwork ?relatedArtwork
+          WHERE {
+
+            ?selectedArtwork ?equalValProp ?equalValPropValue.
+
+            ?relatedArtwork
+              a fb:visual_art.artwork;
+              fb:common.topic.image/fb:type.content.source ?da_ImageSource;
+              ?equalValProp ?equalValPropValue.
+
+            FILTER(?relatedArtwork != ?selectedArtwork).
+            FILTER(STRSTARTS(STR(?relatedArtwork),STR(fb:m))).
+
+          }
+        }
+#        BIND(ABS(xsd:integer(?da_date_completed-?date_completed)) AS ?dateDiff). 
+
+      }
+      GROUP BY ?filter ?selectedArtwork ?relatedArtwork
+#      ORDER BY ?dateDiff
+    }
+  }
+}
+ORDER BY ?area
+LIMIT 40
 ''' .

@@ -2,45 +2,38 @@
 				@prefix df: <http://www.swows.org/dataflow#> . 
 				@prefix swi: <http://www.swows.org/instance#> . 
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
-			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#Images> a df:ConstructGraph ;df:name "Images" ;df:configTxt '''# Images from artworks of Amedeo Modigliani
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#relartwork.rq> a df:IncludedGraph ;df:url <relartwork.rq> ;df:name "relartwork.rq" .<#same-artist.rq> a df:IncludedGraph ;df:url <same-artist.rq> ;df:name "same-artist.rq" .<#same-genre.rq> a df:IncludedGraph ;df:url <same-genre.rq> ;df:name "same-genre.rq" .<#same-genre-form.rq> a df:IncludedGraph ;df:url <same-genre-form.rq> ;df:name "same-genre-form.rq" .<#contemp.rq> a df:IncludedGraph ;df:url <contemp.rq> ;df:name "contemp.rq" .swi:OutputDataset a df:InlineDataset ; df:input <#TuplesOutput>  . <#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#Filters> a df:UnionGraph ; df:input <#contemp.rq> ;df:input <#same-artist.rq> ;df:input <#same-genre-form.rq> ;df:input <#same-genre.rq> ;df:name "Filters" .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
 PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-ont: <http://dbpedia.org/ontology/>
-PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ff: <http://factforge.net/>
-PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
 
-SELECT DISTINCT ?artwork ?image ?uri ?sizeX ?sizeY
-WHERE {
-    dbpedia:Amedeo_Modigliani fb:visual_art.visual_artist.artworks ?artwork .
-    ?artwork fb:common.topic.image ?image .
-    ?image
-		fb:type.content.source ?source ;
-    	fb:common.image.size ?size .
-    ?source fb:type.content_import.uri ?uri .
-    ?size
-        fb:measurement_unit.rect_size.x ?sizeX ;
-        fb:measurement_unit.rect_size.y ?sizeY .
-  	BIND(afn:sqrt(20000*?sizeX/?sizeY) AS ?newSizeX) .
-   	BIND(?newSizeX*?sizeY/?sizeX AS ?newSizeY) .
-	BIND(?newSizeX*?newSizeY AS ?newSizeTot) .
-}''' .<#SelectedArtwork> a df:ConstructGraph ;df:name "SelectedArtwork" ;df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-
-CONSTRUCT{
+INSERT {
+#  <#global> <#selectedArtwork> fb:m.07g8ybw.
   <#global> <#selectedArtwork> fb:m.063j6x5.
 }
-WHERE{}''' .<#SelectTest> a df:ConstructGraph ;df:name "SelectTest" ;df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-
-SELECT ?x ?y
 WHERE {
-  VALUES (?x ?y) {
-  (3 12)
-  (1 4)
-  (2 8)
+  NOT EXISTS {<#global> <#selectedArtwork> ?selected}
+};
+
+DELETE { <#global> <#selectedArtwork> ?oldSelected }
+INSERT { <#global> <#selectedArtwork> ?newSelected }
+WHERE {
+  <#global> <#selectedArtwork> ?oldSelected.
+  GRAPH <#event> {
+    ?event
+      a evt:Event ;
+      evt:type "click" ;
+      evt:toElement ?newSelected .
   }
-} ORDER BY ?x
-''' .<#Framing> a df:ConstructGraph ;df:name "Framing" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+};''' .<#FilterQuery> a df:UpdatableGraph ;df:name "FilterQuery" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Areas" ; df:input <#AreaFilters> ; df:id <#areas> ];df:namedInput [a df:NamedGraph ; df:name "Common" ; df:input <#relartwork.rq> ; df:id <#common> ];df:namedInput [a df:NamedGraph ; df:name "Filters" ; df:input <#Filters> ; df:id <#filters> ];];df:configTxt '''PREFIX sp: <http://spinrdf.org/sp#>
+
+CONSTRUCT {
+  ?cs ?cp ?co.
+}
+WHERE {
+  GRAPH <#common> {
+    ?cs ?cp ?co.
+    FILTER NOT EXISTS {?co sp:graphNameNode <place.filters>}
+  }
+}''' .<#Framing> a df:ConstructGraph ;df:name "Framing" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -256,39 +249,10 @@ PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
 PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
 
 CONSTRUCT {
-  <#topBarArea>
-    a <#ImageArea>;
-    <#filter> <#topBarFilter>.
-  <#topBarFilter>
-    <#equalValProp>
-      fb:visual_art.artwork.art_form,
-      fb:visual_art.artwork.art_genre;
-    <#diffValProp>
-      fb:visual_art.artwork.artist.
-  <#bottomBarArea>
-    a <#ImageArea>;
-    <#filter> <#bottomBarFilter>.
-  <#bottomBarFilter>
-    <#equalValProp>
-      fb:visual_art.artwork.artist.
-  <#leftBarArea>
-    a <#ImageArea>;
-    <#filter> <#leftBarFilter>.
-  <#leftBarFilter>
-    <#equalValProp>
-      fb:visual_art.artwork.artist,
-      fb:visual_art.artwork.art_genre;
-    <#diffValProp>
-      fb:visual_art.artwork.art_form.
-  <#rightBarArea>
-    a <#ImageArea>;
-    <#filter> <#rightBarFilter>.
-  <#rightBarFilter>
-    <#equalValProp>
-      fb:visual_art.artwork.artist,
-      fb:visual_art.artwork.art_form;
-    <#diffValProp>
-      fb:visual_art.artwork.art_genre.
+#  <#topBarArea> <#filter> <same-artist.rq>.
+  <#bottomBarArea> <#filter> <same-genre-form.rq>.
+  <#leftBarArea> <#filter> <same-genre.rq>.
+  <#rightBarArea> <#filter> <contemp.rq>.
 }
 WHERE {
 }
@@ -478,72 +442,7 @@ WHERE {
   BIND(CONCAT('Subject: ',?artSubjectName) AS ?artSubjectStr).
   BIND(CONCAT('Date: ',?date_completed) AS ?dateStr).
 }
-''' .<#RelatedArtwork> a df:ConstructGraph ;df:name "RelatedArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "AreaFilters" ; df:input <#AreaFilters> ; df:id <#areaFilters> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-SELECT DISTINCT ?area ?relatedArtwork
-WHERE {
-
-  GRAPH <#selected> {
-    <#global> <#selectedArtwork> ?selectedArtwork.
-  }
-
-  GRAPH <#areaFilters> {
-    ?area
-      a <#ImageArea>;
-      <#filter> ?filter.
-#    ?filter
-#      <#equalValProp> ?equalValProp;
-#      <#diffValProp> ?diffValProp;
-#      <#orderProps> ?orderProps.
-  
-    {
-      SELECT
-        ?filter
-        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
-        (COUNT(DISTINCT ?diffValProp) AS ?diffCount)
-      WHERE {
-        OPTIONAL {?filter <#equalValProp> ?equalValProp}.
-        OPTIONAL {?filter <#diffValProp> ?diffValProp}.
-      } GROUP BY ?filter
-    }
-
-    {
-      SELECT
-        ?filter ?selectedArtwork ?relatedArtwork
-        (COUNT(DISTINCT ?equalValProp) AS ?equalCount)
-      WHERE {
-        ?filter <#equalValProp> ?equalValProp.
-
-#        SERVICE <http://moro.redi.uniroma1.it:8080/openrdf-sesame/repositories/testfb3> {
-#        SERVICE <http://factforge.net/sparql> {
-        SERVICE <http://146.148.9.150/sparql> {
-          SELECT DISTINCT ?equalValProp ?selectedArtwork ?relatedArtwork
-          WHERE {
-
-            ?selectedArtwork ?equalValProp ?equalValPropValue.
-
-            ?relatedArtwork
-              a fb:visual_art.artwork;
-              fb:common.topic.image/fb:type.content.source ?da_ImageSource;
-              ?equalValProp ?equalValPropValue.
-
-            FILTER(?relatedArtwork != ?selectedArtwork).
-            FILTER(STRSTARTS(STR(?relatedArtwork),STR(fb:m))).
-
-          }
-        }
-#        BIND(ABS(xsd:integer(?da_date_completed-?date_completed)) AS ?dateDiff). 
-
-      }
-      GROUP BY ?filter ?selectedArtwork ?relatedArtwork
-#      ORDER BY ?dateDiff
-    }
-  }
-}
-ORDER BY ?area
-LIMIT 40
-''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#RelatedArtwork> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+''' .<#RelatedArtwork> a df:ConstructGraph ;df:name "RelatedArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Query" ; df:input <#FiltersQuery> ; df:id <#query> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''''' .<#TuplesOutput> a df:ConstructGraph ;df:name "TuplesOutput" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Input" ; df:input <#RelatedArtwork> ; df:id <#input> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -581,8 +480,7 @@ CONSTRUCT {
 WHERE {
 
   {
-  SELECT (GROUP_CONCAT(?tripleStr; separator='
-') AS ?triplesStr)
+  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)
   WHERE {
     BIND(STR(<>) AS ?baseStr) .
     BIND(STRLEN(?baseStr) AS ?baseLen) .
@@ -599,36 +497,66 @@ WHERE {
   }
   }
  
-  BIND(CONCAT('BASE <',STR(<>),'>
-',COALESCE(?triplesStr,'')) AS ?text).
+  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).
 
 }
-''' .<#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#touches> a df:UpdatableGraph ;df:name "touches" ;df:configTxt '''INSERT {
-  ?s ?p ?o .
+''' .<#FiltersQuery> a df:ConstructGraph ;df:name "FiltersQuery" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Areas" ; df:input <#AreaFilters> ; df:id <#areas> ];df:namedInput [a df:NamedGraph ; df:name "Common" ; df:input <#relartwork.rq> ; df:id <#common> ];df:namedInput [a df:NamedGraph ; df:name "Filters" ; df:input <#Filters> ; df:id <#filters> ];df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];];df:configTxt '''PREFIX sp: <http://spinrdf.org/sp#>
+PREFIX spx: <http://www.swows.org/spinx#>
+
+CONSTRUCT {
+  <#FiltersQuery> ?mainP ?mainO.
+  ?cs ?cp ?co.
+  ?filtersContainer spx:element ?filterService.
+  ?filterService
+    a sp:Service;
+    sp:serviceURI <http://146.148.9.150/sparql>;
+    spx:element ?filterSubquery.
+  ?filterSubquery
+    a sp:SubQuery;
+    sp:query ?filter.
+  ?filterWhere spx:element ?common.
+  ?fs ?fp ?fo.
+  ?filter
+    spx:resultVariable ?resultAreaVar, ?selectedArtworkVar;
+    sp:limit ?filterLimit.
+  ?resultAreaVar
+    sp:as ?areaVar;
+    sp:expression ?area.
 }
 WHERE {
-  GRAPH <#touchEvent> {
-    ?s ?p ?o .
+  GRAPH <#common> {
+    <relartwork.rq> ?mainP ?mainO.
+    ?filtersPlace sp:graphNameNode <place.filters>.
+    ?cs ?cp ?co.
+    FILTER(?co != ?filtersPlace).
+    ?filtersContainer spx:element/spx:element ?filtersPlace.
+    ?commonContainer
+      sp:graphNameNode <var.common>;
+      spx:element ?common.
+    ?selectedArtworkVar sp:varName "selectedArtwork".
+    ?areaVar sp:varName "area".
   }
-}''' .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
-PREFIX fb: <http://rdf.freebase.com/ns/>
-
-INSERT {
-#  <#global> <#selectedArtwork> fb:m.07g8ybw.
-  <#global> <#selectedArtwork> fb:m.063j6x5.
-}
-WHERE {
-  NOT EXISTS {<#global> <#selectedArtwork> ?selected}
-};
-
-DELETE { <#global> <#selectedArtwork> ?oldSelected }
-INSERT { <#global> <#selectedArtwork> ?newSelected }
-WHERE {
-  <#global> <#selectedArtwork> ?oldSelected.
-  GRAPH <#event> {
-    ?event
-      a evt:Event ;
-      evt:type "click" ;
-      evt:toElement ?newSelected .
+  {
+    SELECT
+      ?area ?filter ?filterLimit
+      (UUID() AS ?filterSubquery)
+      (UUID() AS ?resultAreaVar)
+      (UUID() AS ?filterService)
+    WHERE {
+      GRAPH <#framing> {
+        ?area
+          a <#ImageArea>;
+          <#cols> ?areaCols;
+          <#rows> ?areaRows.
+      }
+      GRAPH <#areas> {
+        ?area <#filter> ?filter.
+      }
+      BIND(?areaCols*?areaRows AS ?filterLimit).
+    }
   }
-};''' .<#relartwork.rq> a df:IncludedGraph ;df:url <relartwork.rq> ;df:name "RelArtworkQuery" .
+  GRAPH <#filters> {
+    ?fs ?fp ?fo.
+    ?filter sp:where ?filterWhere.
+  }
+}''' .

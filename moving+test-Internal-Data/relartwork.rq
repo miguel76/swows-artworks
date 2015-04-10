@@ -1,44 +1,27 @@
-#
-# @Cache-Control: 
-# @infer true
-# @view 
-#
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX local: <dataflow#>
 
 SELECT DISTINCT ?area ?relatedArtwork
 WHERE {
-
-    GRAPH <#selected> {
-        <#global> <#selectedArtwork> ?selectedArtwork.
+    GRAPH local:selected {
+        local:global local:selectedArtwork ?selectedArtwork.
     }
-
-    {
-        BIND(<#topBarArea> AS ?area).
-#        SERVICE <http://146.148.9.150/sparql> {
-        SERVICE <pippo.org/sparql> {
-          SELECT DISTINCT ?selectedArtwork ?relatedArtwork
-          WHERE {
-            ?selectedArtwork
-              a fb:visual_art.artwork;
-              fb:common.topic.image/fb:type.content.source ?da_ImageSource;
-              ?equalValProp ?equalValPropValue.
-
-            ?relatedArtwork
-              a fb:visual_art.artwork;
-              fb:common.topic.image/fb:type.content.source ?da_ImageSource;
-              ?equalValProp ?equalValPropValue.
-
-            FILTER(?relatedArtwork != ?selectedArtwork).
-            FILTER(STRSTARTS(STR(?relatedArtwork),STR(fb:m))).
-
-          }
+#    SERVICE <http://146.148.9.150/sparql> {
+        {} UNION {
+            GRAPH <place.filters> {
+                GRAPH <var.common> {
+                    ?relatedArtwork
+                        a fb:visual_art.artwork;
+                        fb:common.topic.image/fb:type.content.source ?imageSource.
+                    FILTER(?relatedArtwork != ?selectedArtwork).
+                    FILTER(STRSTARTS(STR(?relatedArtwork),STR(fb:m))).
+                }
+            }
         }
-#        BIND(ABS(xsd:integer(?da_date_completed-?date_completed)) AS ?dateDiff). 
-
-    }
+#    }
 }
 ORDER BY ?area
-LIMIT 40
+

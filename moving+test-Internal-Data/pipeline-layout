@@ -1,120 +1,113 @@
 <components/0>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"135";
+		"99";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"11";
+		"19";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<inputdefault>.
 <components/1>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"613";
+		"994";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"547";
+		"613";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<outputdefault>.
 <components/2223222>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"371";
+		"303";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"32";
+		"187";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/22232232222>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"795";
+		"836";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"243";
+		"343";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<union>.
 <components/22232232223>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"996";
+		"830";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"22";
+		"14";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<dataset>.
 <components/22232232224>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"1209";
+		"946";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"49";
+		"91";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<dataset>.
 <components/22232232225>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"1213";
+		"1060";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"200";
+		"169";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<dataset>.
 <components/22232232226>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"1199";
+		"1176";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"348";
+		"248";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<dataset>.
 <components/222322322272>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"593";
+		"582";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"297";
+		"418";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
-<components/22232232227>
-	<http://www.swows.org/2013/09/pipeline#X>
-		"218";
-	<http://www.swows.org/2013/09/pipeline#Y>
-		"615";
-	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
-		<updatable>.
 <components/2223223222>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"785";
+		"633";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"25";
+		"178";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<dataset>.
 <components/222322322>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"572";
+		"471";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"27";
+		"41";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/22232232>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"38";
+		"63";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"144";
+		"235";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<updatable>.
 <components/2223223>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"396";
+		"522";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"509";
+		"587";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<union>.
 <components/22232>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"916";
+		"1161";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"437";
+		"472";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/2223>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"252";
+		"270";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"316";
+		"454";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 <components/2>
 	<http://www.swows.org/2013/09/pipeline#X>
-		"6";
+		"55";
 	<http://www.swows.org/2013/09/pipeline#Y>
-		"437";
+		"567";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
 

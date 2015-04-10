@@ -5,16 +5,16 @@
 		"Default Input";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#inputdefault>.
-<components/1/TuplesOutput>
+<components/1/Out>
 	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
-		<components/22232>;
+		<components/2223223>;
 	<http://www.swows.org/2013/09/pipeline#Name>
-		"TuplesOutput";
+		"Out";
 	<http://www.swows.org/2013/09/pipeline#Type>
 		"FROM NAMED".
 <components/1>
 	<http://www.swows.org/2013/09/pipeline#InputList>
-		<components/1/TuplesOutput>;
+		<components/1/Out>;
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"Default Output";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
@@ -91,7 +91,7 @@
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"Framing";
 	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nPREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>\n\nCONSTRUCT {\n\n  <>\n    <#padding> ?padding;\n    <#smallImagesWidth> ?smallImagesWidth;\n    <#smallImagesHeight> ?smallImagesHeight;\n    <#windowWidth> ?windowWidth;\n    <#windowHeight> ?windowHeight.\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#svgElem> .\n\n  <#svgElem>\n    a svg:svg ;\n    nn:version \"1.1\" ;\n    nn:width ?windowWidth ;\n    nn:height ?windowHeight ;\n    xml:hasChild <#defs>, <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.\n\n  <#defs> a svg:defs.\n\n  <#centralImage>\n    a svg:image ;\n    nn:x ?centralImageX ;\n    nn:y ?centralImageY ;\n    nn:width ?centralImageWidth ;\n    nn:height ?centralImageHeight .\n\n  <#infoBox> \n    a svg:g;\n    xml:hasChild <#infoBoxName>, <#infoBoxArtist>, <#infoBoxArtForm>, <#infoBoxArtGenre>, <#infoBoxArtSubject>, <#infoBoxDate>.\n\n  <#infoBoxName>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxNameY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtist>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtistY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtForm>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtFormY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtGenre>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtGenreY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtSubject>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtSubjectY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxDate>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxDateY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#topBar> a svg:g.\n\n  <#topBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#topBar>;\n    <#x> ?topBarX;\n    <#y> ?topBarY;\n    <#width> ?topBarWidth;\n    <#height> ?topBarHeight;\n    <#cols> ?numTopImages;\n    <#rows> 1.\n\n  <#bottomBar> a svg:g.\n\n  <#bottomBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#bottomBar>;\n    <#x> ?bottomBarX;\n    <#y> ?bottomBarY;\n    <#width> ?bottomBarWidth;\n    <#height> ?bottomBarHeight;\n    <#cols> ?numBottomImages;\n    <#rows> 1.\n\n  <#leftBar> a svg:g.\n\n  <#leftBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#leftBar>;\n    <#x> ?leftBarX;\n    <#y> ?leftBarY;\n    <#width> ?leftBarWidth;\n    <#height> ?leftBarHeight;\n    <#cols> 1;\n    <#rows> ?numLeftImages.\n\n  <#rightBar> a svg:g.\n\n  <#rightBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#rightBar>;\n    <#x> ?rightBarX;\n    <#y> ?rightBarY;\n    <#width> ?rightBarWidth;\n    <#height> ?rightBarHeight;\n    <#cols> 1;\n    <#rows> ?numRightImages.\n\n}\nWHERE {\n  BIND(1000 as ?windowWidth).\n  BIND(600 as ?windowHeight).\n  BIND(10 as ?padding).\n  BIND(100 as ?smallImagesWidth).\n  BIND(100 as ?smallImagesHeight).\n\n  BIND(?smallImagesHeight as ?topBarHeight).\n  BIND(?smallImagesHeight as ?bottomBarHeight).\n  BIND(?smallImagesWidth as ?leftBarWidth).\n  BIND(?smallImagesWidth as ?rightBarWidth).\n\n  BIND(?leftBarWidth+2*?padding AS ?centralPanelX).\n  BIND(?topBarHeight+2*?padding AS ?centralPanelY).\n  BIND(?windowWidth-?leftBarWidth-?rightBarWidth-4*?padding AS ?centralPanelWidth).\n  BIND(?windowHeight-?topBarHeight-?bottomBarHeight-4*?padding AS ?centralPanelHeight).\n\n  BIND(?centralPanelWidth AS ?topBarWidth).\n  BIND(?centralPanelWidth AS ?bottomBarWidth).\n\n  BIND(?centralPanelX AS ?topBarX).\n  BIND(?padding AS ?topBarY).\n  BIND(?centralPanelX AS ?bottomBarX).\n  BIND(?centralPanelY+?centralPanelHeight+?padding AS ?bottomBarY).\n\n  BIND(?windowHeight-2*?padding AS ?leftBarHeight).\n  BIND(?windowHeight-2*?padding AS ?rightBarHeight).\n\n  BIND(?padding AS ?leftBarX).\n  BIND(?padding AS ?leftBarY).\n  BIND(?centralPanelX+?centralPanelWidth+?padding AS ?rightBarX).\n  BIND(?padding AS ?rightBarY).\n\n  BIND(250 as ?infoBoxWidth).\n#  BIND(80 as ?infoBoxHeight).\n  BIND(25 as ?infoBoxFieldHeight).\n\n  BIND(?centralPanelX+?infoBoxWidth AS ?centralImageX).\n  BIND(?centralPanelY AS ?centralImageY).\n  BIND(?centralPanelWidth-?infoBoxWidth AS ?centralImageWidth).\n  BIND(?centralPanelHeight AS ?centralImageHeight).\n\n  BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).\n  BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).\n  BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).\n  BIND(FLOOR((?rightBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numRightImages).\n\n  BIND(?centralPanelX AS ?infoBoxX).\n  BIND(?centralImageY AS ?infoBoxY).\n#  BIND(?centralPanelWidth AS ?infoBoxWidth).\n  BIND(?centralPanelHeight AS ?infoBoxHeight).\n\n  BIND(?infoBoxY+?infoBoxFieldHeight AS ?infoBoxNameY).\n  BIND(?infoBoxY+2*?infoBoxFieldHeight AS ?infoBoxArtistY).\n  BIND(?infoBoxY+3*?infoBoxFieldHeight AS ?infoBoxArtFormY).\n  BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).\n  BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).\n  BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).\n\n}\n";
+		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nPREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>\n\nCONSTRUCT {\n\n  <>\n    <#padding> ?padding;\n    <#smallImagesWidth> ?smallImagesWidth;\n    <#smallImagesHeight> ?smallImagesHeight;\n    <#windowWidth> ?windowWidth;\n    <#windowHeight> ?windowHeight.\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#svgElem> .\n\n  <#svgElem>\n    a svg:svg ;\n    nn:version \"1.1\" ;\n    nn:width ?windowWidth ;\n    nn:height ?windowHeight ;\n    xml:hasChild <#defs>, <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.\n\n  <#defs> a svg:defs.\n\n  <#centralImage>\n    a svg:image ;\n    nn:x ?centralImageX ;\n    nn:y ?centralImageY ;\n    nn:width ?centralImageWidth ;\n    nn:height ?centralImageHeight .\n\n  <#infoBox> \n    a svg:g;\n    xml:hasChild <#infoBoxName>, <#infoBoxArtist>, <#infoBoxArtForm>, <#infoBoxArtGenre>, <#infoBoxArtSubject>, <#infoBoxDate>.\n\n  <#infoBoxName>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxNameY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtist>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtistY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtForm>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtFormY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtGenre>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtGenreY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxArtSubject>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxArtSubjectY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#infoBoxDate>\n    a svg:text ;\n    nn:x ?infoBoxX ;\n    nn:y ?infoBoxDateY ;\n    nn:width ?infoBoxWidth ;\n    nn:height ?infoBoxFieldHeight .\n\n  <#topBar> a svg:g.\n\n  <#topBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#topBar>;\n    <#x> ?topBarX;\n    <#y> ?topBarY;\n    <#width> ?topBarWidth;\n    <#height> ?topBarHeight;\n    <#cols> ?numTopImages;\n    <#rows> 1.\n\n  <#bottomBar> a svg:g.\n\n  <#bottomBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#bottomBar>;\n    <#x> ?bottomBarX;\n    <#y> ?bottomBarY;\n    <#width> ?bottomBarWidth;\n    <#height> ?bottomBarHeight;\n    <#cols> ?numBottomImages;\n    <#rows> 1.\n\n  <#leftBar> a svg:g.\n\n  <#leftBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#leftBar>;\n    <#x> ?leftBarX;\n    <#y> ?leftBarY;\n    <#width> ?leftBarWidth;\n    <#height> ?leftBarHeight;\n    <#cols> 1;\n    <#rows> ?numLeftImages.\n\n  <#rightBar> a svg:g.\n\n  <#rightBarArea>\n    a <#ImageArea>;\n    <#svgElement> <#rightBar>;\n    <#x> ?rightBarX;\n    <#y> ?rightBarY;\n    <#width> ?rightBarWidth;\n    <#height> ?rightBarHeight;\n    <#cols> 1;\n    <#rows> ?numRightImages.\n\n}\nWHERE {\n  BIND(1400 as ?windowWidth).\n  BIND(700 as ?windowHeight).\n  BIND(10 as ?padding).\n  BIND(100 as ?smallImagesWidth).\n  BIND(100 as ?smallImagesHeight).\n\n  BIND(?smallImagesHeight as ?topBarHeight).\n  BIND(?smallImagesHeight as ?bottomBarHeight).\n  BIND(?smallImagesWidth as ?leftBarWidth).\n  BIND(?smallImagesWidth as ?rightBarWidth).\n\n  BIND(?leftBarWidth+2*?padding AS ?centralPanelX).\n  BIND(?topBarHeight+2*?padding AS ?centralPanelY).\n  BIND(?windowWidth-?leftBarWidth-?rightBarWidth-4*?padding AS ?centralPanelWidth).\n  BIND(?windowHeight-?topBarHeight-?bottomBarHeight-4*?padding AS ?centralPanelHeight).\n\n  BIND(?centralPanelWidth AS ?topBarWidth).\n  BIND(?centralPanelWidth AS ?bottomBarWidth).\n\n  BIND(?centralPanelX AS ?topBarX).\n  BIND(?padding AS ?topBarY).\n  BIND(?centralPanelX AS ?bottomBarX).\n  BIND(?centralPanelY+?centralPanelHeight+?padding AS ?bottomBarY).\n\n  BIND(?windowHeight-2*?padding AS ?leftBarHeight).\n  BIND(?windowHeight-2*?padding AS ?rightBarHeight).\n\n  BIND(?padding AS ?leftBarX).\n  BIND(?padding AS ?leftBarY).\n  BIND(?centralPanelX+?centralPanelWidth+?padding AS ?rightBarX).\n  BIND(?padding AS ?rightBarY).\n\n  BIND(250 as ?infoBoxWidth).\n#  BIND(80 as ?infoBoxHeight).\n  BIND(25 as ?infoBoxFieldHeight).\n\n  BIND(?centralPanelX+?infoBoxWidth AS ?centralImageX).\n  BIND(?centralPanelY AS ?centralImageY).\n  BIND(?centralPanelWidth-?infoBoxWidth AS ?centralImageWidth).\n  BIND(?centralPanelHeight AS ?centralImageHeight).\n\n  BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).\n  BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).\n  BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).\n  BIND(FLOOR((?rightBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numRightImages).\n\n  BIND(?centralPanelX AS ?infoBoxX).\n  BIND(?centralImageY AS ?infoBoxY).\n#  BIND(?centralPanelWidth AS ?infoBoxWidth).\n  BIND(?centralPanelHeight AS ?infoBoxHeight).\n\n  BIND(?infoBoxY+?infoBoxFieldHeight AS ?infoBoxNameY).\n  BIND(?infoBoxY+2*?infoBoxFieldHeight AS ?infoBoxArtistY).\n  BIND(?infoBoxY+3*?infoBoxFieldHeight AS ?infoBoxArtFormY).\n  BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).\n  BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).\n  BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).\n\n}\n";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#construct>.
 <components/2223223/Framing>
@@ -203,41 +203,6 @@
 		"contemp.rq";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#dataset>.
-<components/22232232227/areas>
-	<http://www.swows.org/2013/09/pipeline#Color>
-		"Black";
-	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
-		<components/222322322>;
-	<http://www.swows.org/2013/09/pipeline#Name>
-		"Areas";
-	<http://www.swows.org/2013/09/pipeline#Shape>
-		"Rectangle";
-	<http://www.swows.org/2013/09/pipeline#Type>
-		"FROM NAMED".
-<components/22232232227/common>
-	<http://www.swows.org/2013/09/pipeline#Color>
-		"Blue";
-	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
-		<components/2223223222>;
-	<http://www.swows.org/2013/09/pipeline#Name>
-		"Common";
-	<http://www.swows.org/2013/09/pipeline#Shape>
-		"Rectangle";
-	<http://www.swows.org/2013/09/pipeline#Type>
-		"FROM NAMED";
-	<http://www.swows.org/2013/09/pipeline#Uri>
-		"relartwork.rq".
-<components/22232232227/filters>
-	<http://www.swows.org/2013/09/pipeline#Color>
-		"Red";
-	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
-		<components/22232232222>;
-	<http://www.swows.org/2013/09/pipeline#Name>
-		"Filters";
-	<http://www.swows.org/2013/09/pipeline#Shape>
-		"Rectangle";
-	<http://www.swows.org/2013/09/pipeline#Type>
-		"FROM NAMED".
 <components/222322322272/areas>
 	<http://www.swows.org/2013/09/pipeline#Color>
 		"Green";
@@ -261,7 +226,7 @@
 	<http://www.swows.org/2013/09/pipeline#Type>
 		"FROM NAMED";
 	<http://www.swows.org/2013/09/pipeline#Uri>
-		"relartwork.rq".
+		"filters-common.rq".
 <components/222322322272/filters>
 	<http://www.swows.org/2013/09/pipeline#Color>
 		"Red";
@@ -295,29 +260,16 @@
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"FiltersQuery";
 	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX sp: <http://spinrdf.org/sp#>\nPREFIX spx: <http://www.swows.org/spinx#>\n\nCONSTRUCT {\n  <#FiltersQuery> ?mainP ?mainO.\n  ?cs ?cp ?co.\n  ?filtersContainer spx:element ?filterService.\n  ?filterService\n    a sp:Service;\n    sp:serviceURI <http://146.148.9.150/sparql>;\n    spx:element ?filterSubquery.\n  ?filterSubquery\n    a sp:SubQuery;\n    sp:query ?filter.\n  ?filterWhere spx:element ?common.\n  ?fs ?fp ?fo.\n  ?filter\n    spx:resultVariable ?resultAreaVar, ?selectedArtworkVar;\n    sp:limit ?filterLimit.\n  ?resultAreaVar\n    sp:as ?areaVar;\n    sp:expression ?area.\n}\nWHERE {\n  GRAPH <#common> {\n    <relartwork.rq> ?mainP ?mainO.\n    ?filtersPlace sp:graphNameNode <place.filters>.\n    ?cs ?cp ?co.\n    FILTER(?co != ?filtersPlace).\n    ?filtersContainer spx:element/spx:element ?filtersPlace.\n    ?commonContainer\n      sp:graphNameNode <var.common>;\n      spx:element ?common.\n    ?selectedArtworkVar sp:varName \"selectedArtwork\".\n    ?areaVar sp:varName \"area\".\n  }\n  {\n    SELECT\n      ?area ?filter ?filterLimit\n      (UUID() AS ?filterSubquery)\n      (UUID() AS ?resultAreaVar)\n      (UUID() AS ?filterService)\n    WHERE {\n      GRAPH <#framing> {\n        ?area\n          a <#ImageArea>;\n          <#cols> ?areaCols;\n          <#rows> ?areaRows.\n      }\n      GRAPH <#areas> {\n        ?area <#filter> ?filter.\n      }\n      BIND(?areaCols*?areaRows AS ?filterLimit).\n    }\n  }\n  GRAPH <#filters> {\n    ?fs ?fp ?fo.\n    ?filter sp:where ?filterWhere.\n  }\n}";
+		"PREFIX sp: <http://spinrdf.org/sp#>\nPREFIX spx: <http://www.swows.org/spinx#>\n\nCONSTRUCT {\n  <#FiltersQuery> ?mainP ?mainO.\n  ?cs ?cp ?co.\n  ?filtersContainer spx:element ?filterGroup.\n  ?filterGroup\n    a spx:ElementGroup;\n    spx:element ?selected;\n    spx:element ?filterService.  \n  ?filterService\n    a sp:Service;\n    sp:serviceURI <http://146.148.9.150/sparql>;\n    spx:element ?filterSubquery.\n  ?filterSubquery\n    a sp:SubQuery;\n    sp:query ?filter.\n  ?filterWhere spx:element ?common.\n  ?fs ?fp ?fo.\n  ?filter\n    spx:resultVariable ?resultAreaVar, ?selectedArtworkVar;\n    sp:limit ?filterLimit.\n  ?resultAreaVar\n    sp:as ?areaVar;\n    sp:expression ?area.\n}\nWHERE {\n  GRAPH <#common> {\n    <filters-common.rq> ?mainP ?mainO.\n    ?filtersPlace sp:graphNameNode <place.filters>.\n    ?cs ?cp ?co.\n    FILTER(?co != ?filtersPlace).\n    ?filtersContainer spx:element/spx:element ?filtersPlace.\n    ?commonContainer\n      sp:graphNameNode <var.common>;\n      spx:element ?common.\n    ?selectedArtworkVar sp:varName \"selectedArtwork\".\n    ?areaVar sp:varName \"area\".\n    ?selectedContainer\n      sp:graphNameNode <var.selected>;\n      spx:element ?selected.\n  }\n  {\n    SELECT\n      ?area ?filter ?filterLimit\n      (UUID() AS ?filterSubquery)\n      (UUID() AS ?resultAreaVar)\n      (UUID() AS ?filterService)\n      (UUID() AS ?filterGroup)\n    WHERE {\n      GRAPH <#framing> {\n        ?area\n          a <#ImageArea>;\n          <#cols> ?areaCols;\n          <#rows> ?areaRows.\n      }\n      GRAPH <#areas> {\n        ?area <#filter> ?filter.\n      }\n      BIND(?areaCols*?areaRows AS ?filterLimit).\n    }\n  }\n  GRAPH <#filters> {\n    ?fs ?fp ?fo.\n    ?filter sp:where ?filterWhere.\n  }\n}";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#construct>.
-<components/22232232227>
-	<http://www.swows.org/2013/09/pipeline#ID>
-		"FilterQuery";
-	<http://www.swows.org/2013/09/pipeline#InputList>
-		<components/22232232227/areas>,
-		<components/22232232227/common>,
-		<components/22232232227/filters>;
-	<http://www.swows.org/2013/09/pipeline#Name>
-		"FilterQuery";
-	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX sp: <http://spinrdf.org/sp#>\n\nCONSTRUCT {\n  ?cs ?cp ?co.\n}\nWHERE {\n  GRAPH <#common> {\n    ?cs ?cp ?co.\n    FILTER NOT EXISTS {?co sp:graphNameNode <place.filters>}\n  }\n}";
-	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
-		<http://www.swows.org/2013/09/pipeline#updatable>.
 <components/2223223222>
 	<http://www.swows.org/2013/09/pipeline#ID>
-		"relartwork.rq";
+		"filters-common.rq";
 	<http://www.swows.org/2013/09/pipeline#Name>
-		"relartwork.rq";
+		"filters-common.rq";
 	<http://www.swows.org/2013/09/pipeline#URI>
-		"relartwork.rq";
+		"filters-common.rq";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#dataset>.
 <components/222322322>
@@ -326,7 +278,7 @@
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"AreaFilters";
 	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nPREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>\n\nCONSTRUCT {\n#  <#topBarArea> <#filter> <same-artist.rq>.\n  <#bottomBarArea> <#filter> <same-genre-form.rq>.\n  <#leftBarArea> <#filter> <same-genre.rq>.\n  <#rightBarArea> <#filter> <contemp.rq>.\n}\nWHERE {\n}\n";
+		"CONSTRUCT {\n  <#topBarArea> <#filter> <same-artist.rq>.\n  <#bottomBarArea> <#filter> <same-genre-form.rq>.\n  <#leftBarArea> <#filter> <same-genre.rq>.\n  <#rightBarArea> <#filter> <contemp.rq>.\n}\nWHERE {}\n";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#construct>.
 <components/22232232>
@@ -358,7 +310,7 @@
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"TuplesOutput";
 	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\nPREFIX html:  <http://www.w3.org/1999/xhtml#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nCONSTRUCT {\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#htmlElem> .\n\n  <#htmlElem>\n    a html:html ;\n    xml:hasChild <#body> .\n\n  <#body>\n    a html:body ;\n    xml:hasChild <#textArea> .\n\n  <#textArea>\n    a html:textarea ;\n    nn:style \"width: 100%; height:100%\";\n    xml:textContent ?text .\n\n}\nWHERE {\n\n  {\n  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)\n  WHERE {\n    BIND(STR(<>) AS ?baseStr) .\n    BIND(STRLEN(?baseStr) AS ?baseLen) .\n    GRAPH <#input> {\n      ?s ?p ?o .\n    } .\n    BIND(STR(?s) AS ?sStr).\n    BIND(IF(isBLANK(?s), CONCAT('_:',afn:bnode(?s)), CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>')) AS ?sOut).\n    BIND(STR(?p) AS ?pStr).\n    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).\n    BIND(STR(?o) AS ?oStr).\n    BIND(IF(isBLANK(?o), CONCAT('_:',afn:bnode(?o)), IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('\"', STR(?o), '\"'))) ) AS ?oOut).\n    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).\n  }\n  }\n \n  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).\n\n}\n";
+		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\nPREFIX html:  <http://www.w3.org/1999/xhtml#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nCONSTRUCT {\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#htmlElem> .\n\n  <#htmlElem>\n    a html:html ;\n    xml:hasChild <#body> .\n\n  <#body>\n    a html:body ;\n    xml:hasChild <#textArea> .\n\n  <#textArea>\n    a html:textarea ;\n    nn:style \"width: 100%; height:100%\";\n    xml:textContent ?text .\n\n}\nWHERE {\n\n  {\n  SELECT (GROUP_CONCAT(?tripleStr; separator='\n') AS ?triplesStr)\n  WHERE {\n    BIND(STR(<>) AS ?baseStr) .\n    BIND(STRLEN(?baseStr) AS ?baseLen) .\n    GRAPH <#input> {\n      ?s ?p ?o .\n    } .\n    BIND(STR(?s) AS ?sStr).\n    BIND(IF(isBLANK(?s), CONCAT('_:',afn:bnode(?s)), CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>')) AS ?sOut).\n    BIND(STR(?p) AS ?pStr).\n    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).\n    BIND(STR(?o) AS ?oStr).\n    BIND(IF(isBLANK(?o), CONCAT('_:',afn:bnode(?o)), IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('\"', STR(?o), '\"'))) ) AS ?oOut).\n    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).\n  }\n  }\n \n  BIND(CONCAT('BASE <',STR(<>),'>\n',COALESCE(?triplesStr,'')) AS ?text).\n\n}\n";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#construct>.
 <components/2223>

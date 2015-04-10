@@ -2,7 +2,7 @@
 				@prefix df: <http://www.swows.org/dataflow#> . 
 				@prefix swi: <http://www.swows.org/instance#> . 
 				@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
-			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#relartwork.rq> a df:IncludedGraph ;df:url <relartwork.rq> ;df:name "relartwork.rq" .<#same-artist.rq> a df:IncludedGraph ;df:url <same-artist.rq> ;df:name "same-artist.rq" .<#same-genre.rq> a df:IncludedGraph ;df:url <same-genre.rq> ;df:name "same-genre.rq" .<#same-genre-form.rq> a df:IncludedGraph ;df:url <same-genre-form.rq> ;df:name "same-genre-form.rq" .<#contemp.rq> a df:IncludedGraph ;df:url <contemp.rq> ;df:name "contemp.rq" .swi:OutputDataset a df:InlineDataset ; df:input <#TuplesOutput>  . <#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#Filters> a df:UnionGraph ; df:input <#contemp.rq> ;df:input <#same-artist.rq> ;df:input <#same-genre-form.rq> ;df:input <#same-genre.rq> ;df:name "Filters" .<#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
+			<#defaultInput> a df:SelectGraph ;df:input swi:InputDataset .<#filters-common.rq> a df:IncludedGraph ;df:url <filters-common.rq> ;df:name "filters-common.rq" .<#same-artist.rq> a df:IncludedGraph ;df:url <same-artist.rq> ;df:name "same-artist.rq" .<#same-genre.rq> a df:IncludedGraph ;df:url <same-genre.rq> ;df:name "same-genre.rq" .<#same-genre-form.rq> a df:IncludedGraph ;df:url <same-genre-form.rq> ;df:name "same-genre-form.rq" .<#contemp.rq> a df:IncludedGraph ;df:url <contemp.rq> ;df:name "contemp.rq" .swi:OutputDataset a df:InlineDataset ; df:input <#Out>  . <#SelArtwork> a df:UpdatableGraph ;df:name "SelArtwork" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Event" ; df:input <#defaultInput> ; df:id <#event> ];];df:configTxt '''PREFIX evt:  <http://www.swows.org/2013/07/xml-dom-events#>
 PREFIX fb: <http://rdf.freebase.com/ns/>
 
 INSERT {
@@ -23,240 +23,7 @@ WHERE {
       evt:type "click" ;
       evt:toElement ?newSelected .
   }
-};''' .<#FilterQuery> a df:UpdatableGraph ;df:name "FilterQuery" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Areas" ; df:input <#AreaFilters> ; df:id <#areas> ];df:namedInput [a df:NamedGraph ; df:name "Common" ; df:input <#relartwork.rq> ; df:id <#common> ];df:namedInput [a df:NamedGraph ; df:name "Filters" ; df:input <#Filters> ; df:id <#filters> ];];df:configTxt '''PREFIX sp: <http://spinrdf.org/sp#>
-
-CONSTRUCT {
-  ?cs ?cp ?co.
-}
-WHERE {
-  GRAPH <#common> {
-    ?cs ?cp ?co.
-    FILTER NOT EXISTS {?co sp:graphNameNode <place.filters>}
-  }
-}''' .<#Framing> a df:ConstructGraph ;df:name "Framing" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
-PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
-PREFIX svg:   <http://www.w3.org/2000/svg#>
-PREFIX xlink: <http://www.w3.org/1999/xlink#>
-PREFIX swi:   <http://www.swows.org/instance#>
-
-PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-ont: <http://dbpedia.org/ontology/>
-PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ff: <http://factforge.net/>
-PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
-
-PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
-
-CONSTRUCT {
-
-  <>
-    <#padding> ?padding;
-    <#smallImagesWidth> ?smallImagesWidth;
-    <#smallImagesHeight> ?smallImagesHeight;
-    <#windowWidth> ?windowWidth;
-    <#windowHeight> ?windowHeight.
-
-  <#svgDoc>
-    a xml:Document ;
-    xml:hasChild <#svgElem> .
-
-  <#svgElem>
-    a svg:svg ;
-    nn:version "1.1" ;
-    nn:width ?windowWidth ;
-    nn:height ?windowHeight ;
-    xml:hasChild <#defs>, <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
-
-  <#defs> a svg:defs.
-
-  <#centralImage>
-    a svg:image ;
-    nn:x ?centralImageX ;
-    nn:y ?centralImageY ;
-    nn:width ?centralImageWidth ;
-    nn:height ?centralImageHeight .
-
-  <#infoBox> 
-    a svg:g;
-    xml:hasChild <#infoBoxName>, <#infoBoxArtist>, <#infoBoxArtForm>, <#infoBoxArtGenre>, <#infoBoxArtSubject>, <#infoBoxDate>.
-
-  <#infoBoxName>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxNameY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#infoBoxArtist>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxArtistY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#infoBoxArtForm>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxArtFormY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#infoBoxArtGenre>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxArtGenreY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#infoBoxArtSubject>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxArtSubjectY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#infoBoxDate>
-    a svg:text ;
-    nn:x ?infoBoxX ;
-    nn:y ?infoBoxDateY ;
-    nn:width ?infoBoxWidth ;
-    nn:height ?infoBoxFieldHeight .
-
-  <#topBar> a svg:g.
-
-  <#topBarArea>
-    a <#ImageArea>;
-    <#svgElement> <#topBar>;
-    <#x> ?topBarX;
-    <#y> ?topBarY;
-    <#width> ?topBarWidth;
-    <#height> ?topBarHeight;
-    <#cols> ?numTopImages;
-    <#rows> 1.
-
-  <#bottomBar> a svg:g.
-
-  <#bottomBarArea>
-    a <#ImageArea>;
-    <#svgElement> <#bottomBar>;
-    <#x> ?bottomBarX;
-    <#y> ?bottomBarY;
-    <#width> ?bottomBarWidth;
-    <#height> ?bottomBarHeight;
-    <#cols> ?numBottomImages;
-    <#rows> 1.
-
-  <#leftBar> a svg:g.
-
-  <#leftBarArea>
-    a <#ImageArea>;
-    <#svgElement> <#leftBar>;
-    <#x> ?leftBarX;
-    <#y> ?leftBarY;
-    <#width> ?leftBarWidth;
-    <#height> ?leftBarHeight;
-    <#cols> 1;
-    <#rows> ?numLeftImages.
-
-  <#rightBar> a svg:g.
-
-  <#rightBarArea>
-    a <#ImageArea>;
-    <#svgElement> <#rightBar>;
-    <#x> ?rightBarX;
-    <#y> ?rightBarY;
-    <#width> ?rightBarWidth;
-    <#height> ?rightBarHeight;
-    <#cols> 1;
-    <#rows> ?numRightImages.
-
-}
-WHERE {
-  BIND(1000 as ?windowWidth).
-  BIND(600 as ?windowHeight).
-  BIND(10 as ?padding).
-  BIND(100 as ?smallImagesWidth).
-  BIND(100 as ?smallImagesHeight).
-
-  BIND(?smallImagesHeight as ?topBarHeight).
-  BIND(?smallImagesHeight as ?bottomBarHeight).
-  BIND(?smallImagesWidth as ?leftBarWidth).
-  BIND(?smallImagesWidth as ?rightBarWidth).
-
-  BIND(?leftBarWidth+2*?padding AS ?centralPanelX).
-  BIND(?topBarHeight+2*?padding AS ?centralPanelY).
-  BIND(?windowWidth-?leftBarWidth-?rightBarWidth-4*?padding AS ?centralPanelWidth).
-  BIND(?windowHeight-?topBarHeight-?bottomBarHeight-4*?padding AS ?centralPanelHeight).
-
-  BIND(?centralPanelWidth AS ?topBarWidth).
-  BIND(?centralPanelWidth AS ?bottomBarWidth).
-
-  BIND(?centralPanelX AS ?topBarX).
-  BIND(?padding AS ?topBarY).
-  BIND(?centralPanelX AS ?bottomBarX).
-  BIND(?centralPanelY+?centralPanelHeight+?padding AS ?bottomBarY).
-
-  BIND(?windowHeight-2*?padding AS ?leftBarHeight).
-  BIND(?windowHeight-2*?padding AS ?rightBarHeight).
-
-  BIND(?padding AS ?leftBarX).
-  BIND(?padding AS ?leftBarY).
-  BIND(?centralPanelX+?centralPanelWidth+?padding AS ?rightBarX).
-  BIND(?padding AS ?rightBarY).
-
-  BIND(250 as ?infoBoxWidth).
-#  BIND(80 as ?infoBoxHeight).
-  BIND(25 as ?infoBoxFieldHeight).
-
-  BIND(?centralPanelX+?infoBoxWidth AS ?centralImageX).
-  BIND(?centralPanelY AS ?centralImageY).
-  BIND(?centralPanelWidth-?infoBoxWidth AS ?centralImageWidth).
-  BIND(?centralPanelHeight AS ?centralImageHeight).
-
-  BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).
-  BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).
-  BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).
-  BIND(FLOOR((?rightBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numRightImages).
-
-  BIND(?centralPanelX AS ?infoBoxX).
-  BIND(?centralImageY AS ?infoBoxY).
-#  BIND(?centralPanelWidth AS ?infoBoxWidth).
-  BIND(?centralPanelHeight AS ?infoBoxHeight).
-
-  BIND(?infoBoxY+?infoBoxFieldHeight AS ?infoBoxNameY).
-  BIND(?infoBoxY+2*?infoBoxFieldHeight AS ?infoBoxArtistY).
-  BIND(?infoBoxY+3*?infoBoxFieldHeight AS ?infoBoxArtFormY).
-  BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).
-  BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).
-  BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
-
-}
-''' .<#AreaFilters> a df:ConstructGraph ;df:name "AreaFilters" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
-PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
-PREFIX svg:   <http://www.w3.org/2000/svg#>
-PREFIX xlink: <http://www.w3.org/1999/xlink#>
-
-PREFIX fb: <http://rdf.freebase.com/ns/>
-PREFIX dbpedia: <http://dbpedia.org/resource/>
-PREFIX dbp-ont: <http://dbpedia.org/ontology/>
-PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ff: <http://factforge.net/>
-PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
-
-PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
-
-CONSTRUCT {
-#  <#topBarArea> <#filter> <same-artist.rq>.
-  <#bottomBarArea> <#filter> <same-genre-form.rq>.
-  <#leftBarArea> <#filter> <same-genre.rq>.
-  <#rightBarArea> <#filter> <contemp.rq>.
-}
-WHERE {
-}
-''' .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];df:namedInput [a df:NamedGraph ; df:name "RelArtwork" ; df:input <#RelatedArtwork> ; df:id <#relArtwork> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+};''' .<#Filters> a df:UnionGraph ; df:input <#contemp.rq> ;df:input <#same-artist.rq> ;df:input <#same-genre-form.rq> ;df:input <#same-genre.rq> ;df:name "Filters" .<#Out> a df:UnionGraph ; df:input <#Framing> ;df:input <#View> ;df:name "Out" .<#View> a df:ConstructGraph ;df:name "View" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];df:namedInput [a df:NamedGraph ; df:name "RelArtwork" ; df:input <#RelatedArtwork> ; df:id <#relArtwork> ];df:namedInput [a df:NamedGraph ; df:name "Selected" ; df:input <#SelArtwork> ; df:id <#selected> ];];df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
 PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
 PREFIX svg:   <http://www.w3.org/2000/svg#>
 PREFIX xlink: <http://www.w3.org/1999/xlink#>
@@ -480,7 +247,8 @@ CONSTRUCT {
 WHERE {
 
   {
-  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)
+  SELECT (GROUP_CONCAT(?tripleStr; separator='
+') AS ?triplesStr)
   WHERE {
     BIND(STR(<>) AS ?baseStr) .
     BIND(STRLEN(?baseStr) AS ?baseLen) .
@@ -497,16 +265,21 @@ WHERE {
   }
   }
  
-  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).
+  BIND(CONCAT('BASE <',STR(<>),'>
+',COALESCE(?triplesStr,'')) AS ?text).
 
 }
-''' .<#FiltersQuery> a df:ConstructGraph ;df:name "FiltersQuery" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Areas" ; df:input <#AreaFilters> ; df:id <#areas> ];df:namedInput [a df:NamedGraph ; df:name "Common" ; df:input <#relartwork.rq> ; df:id <#common> ];df:namedInput [a df:NamedGraph ; df:name "Filters" ; df:input <#Filters> ; df:id <#filters> ];df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];];df:configTxt '''PREFIX sp: <http://spinrdf.org/sp#>
+''' .<#FiltersQuery> a df:ConstructGraph ;df:name "FiltersQuery" ;df:input [ a df:InlineDataset ;df:namedInput [a df:NamedGraph ; df:name "Areas" ; df:input <#AreaFilters> ; df:id <#areas> ];df:namedInput [a df:NamedGraph ; df:name "Common" ; df:input <#filters-common.rq> ; df:id <#common> ];df:namedInput [a df:NamedGraph ; df:name "Filters" ; df:input <#Filters> ; df:id <#filters> ];df:namedInput [a df:NamedGraph ; df:name "Framing" ; df:input <#Framing> ; df:id <#framing> ];];df:configTxt '''PREFIX sp: <http://spinrdf.org/sp#>
 PREFIX spx: <http://www.swows.org/spinx#>
 
 CONSTRUCT {
   <#FiltersQuery> ?mainP ?mainO.
   ?cs ?cp ?co.
-  ?filtersContainer spx:element ?filterService.
+  ?filtersContainer spx:element ?filterGroup.
+  ?filterGroup
+    a spx:ElementGroup;
+    spx:element ?selected;
+    spx:element ?filterService.  
   ?filterService
     a sp:Service;
     sp:serviceURI <http://146.148.9.150/sparql>;
@@ -525,7 +298,7 @@ CONSTRUCT {
 }
 WHERE {
   GRAPH <#common> {
-    <relartwork.rq> ?mainP ?mainO.
+    <filters-common.rq> ?mainP ?mainO.
     ?filtersPlace sp:graphNameNode <place.filters>.
     ?cs ?cp ?co.
     FILTER(?co != ?filtersPlace).
@@ -535,6 +308,9 @@ WHERE {
       spx:element ?common.
     ?selectedArtworkVar sp:varName "selectedArtwork".
     ?areaVar sp:varName "area".
+    ?selectedContainer
+      sp:graphNameNode <var.selected>;
+      spx:element ?selected.
   }
   {
     SELECT
@@ -542,6 +318,7 @@ WHERE {
       (UUID() AS ?filterSubquery)
       (UUID() AS ?resultAreaVar)
       (UUID() AS ?filterService)
+      (UUID() AS ?filterGroup)
     WHERE {
       GRAPH <#framing> {
         ?area
@@ -559,4 +336,211 @@ WHERE {
     ?fs ?fp ?fo.
     ?filter sp:where ?filterWhere.
   }
-}''' .
+}''' .<#Framing> a df:ConstructGraph ;df:name "Framing" ;df:configTxt '''PREFIX nn:    <http://www.swows.org/xml/no-namespace#>
+PREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>
+PREFIX svg:   <http://www.w3.org/2000/svg#>
+PREFIX xlink: <http://www.w3.org/1999/xlink#>
+PREFIX swi:   <http://www.swows.org/instance#>
+
+PREFIX fb: <http://rdf.freebase.com/ns/>
+PREFIX dbpedia: <http://dbpedia.org/resource/>
+PREFIX dbp-ont: <http://dbpedia.org/ontology/>
+PREFIX umbel-sc: <http://umbel.org/umbel/sc/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ff: <http://factforge.net/>
+PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+
+PREFIX sparql-res: <http://www.w3.org/2005/sparql-results#>
+
+CONSTRUCT {
+
+  <>
+    <#padding> ?padding;
+    <#smallImagesWidth> ?smallImagesWidth;
+    <#smallImagesHeight> ?smallImagesHeight;
+    <#windowWidth> ?windowWidth;
+    <#windowHeight> ?windowHeight.
+
+  <#svgDoc>
+    a xml:Document ;
+    xml:hasChild <#svgElem> .
+
+  <#svgElem>
+    a svg:svg ;
+    nn:version "1.1" ;
+    nn:width ?windowWidth ;
+    nn:height ?windowHeight ;
+    xml:hasChild <#defs>, <#centralImage>, <#infoBox>, <#topBar>, <#bottomBar>, <#leftBar>, <#rightBar>.
+
+  <#defs> a svg:defs.
+
+  <#centralImage>
+    a svg:image ;
+    nn:x ?centralImageX ;
+    nn:y ?centralImageY ;
+    nn:width ?centralImageWidth ;
+    nn:height ?centralImageHeight .
+
+  <#infoBox> 
+    a svg:g;
+    xml:hasChild <#infoBoxName>, <#infoBoxArtist>, <#infoBoxArtForm>, <#infoBoxArtGenre>, <#infoBoxArtSubject>, <#infoBoxDate>.
+
+  <#infoBoxName>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxNameY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#infoBoxArtist>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtistY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#infoBoxArtForm>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtFormY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#infoBoxArtGenre>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtGenreY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#infoBoxArtSubject>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxArtSubjectY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#infoBoxDate>
+    a svg:text ;
+    nn:x ?infoBoxX ;
+    nn:y ?infoBoxDateY ;
+    nn:width ?infoBoxWidth ;
+    nn:height ?infoBoxFieldHeight .
+
+  <#topBar> a svg:g.
+
+  <#topBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#topBar>;
+    <#x> ?topBarX;
+    <#y> ?topBarY;
+    <#width> ?topBarWidth;
+    <#height> ?topBarHeight;
+    <#cols> ?numTopImages;
+    <#rows> 1.
+
+  <#bottomBar> a svg:g.
+
+  <#bottomBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#bottomBar>;
+    <#x> ?bottomBarX;
+    <#y> ?bottomBarY;
+    <#width> ?bottomBarWidth;
+    <#height> ?bottomBarHeight;
+    <#cols> ?numBottomImages;
+    <#rows> 1.
+
+  <#leftBar> a svg:g.
+
+  <#leftBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#leftBar>;
+    <#x> ?leftBarX;
+    <#y> ?leftBarY;
+    <#width> ?leftBarWidth;
+    <#height> ?leftBarHeight;
+    <#cols> 1;
+    <#rows> ?numLeftImages.
+
+  <#rightBar> a svg:g.
+
+  <#rightBarArea>
+    a <#ImageArea>;
+    <#svgElement> <#rightBar>;
+    <#x> ?rightBarX;
+    <#y> ?rightBarY;
+    <#width> ?rightBarWidth;
+    <#height> ?rightBarHeight;
+    <#cols> 1;
+    <#rows> ?numRightImages.
+
+}
+WHERE {
+  BIND(1400 as ?windowWidth).
+  BIND(700 as ?windowHeight).
+  BIND(10 as ?padding).
+  BIND(100 as ?smallImagesWidth).
+  BIND(100 as ?smallImagesHeight).
+
+  BIND(?smallImagesHeight as ?topBarHeight).
+  BIND(?smallImagesHeight as ?bottomBarHeight).
+  BIND(?smallImagesWidth as ?leftBarWidth).
+  BIND(?smallImagesWidth as ?rightBarWidth).
+
+  BIND(?leftBarWidth+2*?padding AS ?centralPanelX).
+  BIND(?topBarHeight+2*?padding AS ?centralPanelY).
+  BIND(?windowWidth-?leftBarWidth-?rightBarWidth-4*?padding AS ?centralPanelWidth).
+  BIND(?windowHeight-?topBarHeight-?bottomBarHeight-4*?padding AS ?centralPanelHeight).
+
+  BIND(?centralPanelWidth AS ?topBarWidth).
+  BIND(?centralPanelWidth AS ?bottomBarWidth).
+
+  BIND(?centralPanelX AS ?topBarX).
+  BIND(?padding AS ?topBarY).
+  BIND(?centralPanelX AS ?bottomBarX).
+  BIND(?centralPanelY+?centralPanelHeight+?padding AS ?bottomBarY).
+
+  BIND(?windowHeight-2*?padding AS ?leftBarHeight).
+  BIND(?windowHeight-2*?padding AS ?rightBarHeight).
+
+  BIND(?padding AS ?leftBarX).
+  BIND(?padding AS ?leftBarY).
+  BIND(?centralPanelX+?centralPanelWidth+?padding AS ?rightBarX).
+  BIND(?padding AS ?rightBarY).
+
+  BIND(250 as ?infoBoxWidth).
+#  BIND(80 as ?infoBoxHeight).
+  BIND(25 as ?infoBoxFieldHeight).
+
+  BIND(?centralPanelX+?infoBoxWidth AS ?centralImageX).
+  BIND(?centralPanelY AS ?centralImageY).
+  BIND(?centralPanelWidth-?infoBoxWidth AS ?centralImageWidth).
+  BIND(?centralPanelHeight AS ?centralImageHeight).
+
+  BIND(FLOOR((?topBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numTopImages).
+  BIND(FLOOR((?bottomBarWidth-?smallImagesWidth)/(?smallImagesWidth+?padding)+1) AS ?numBottomImages).
+  BIND(FLOOR((?leftBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numLeftImages).
+  BIND(FLOOR((?rightBarHeight-?smallImagesHeight)/(?smallImagesHeight+?padding)+1) AS ?numRightImages).
+
+  BIND(?centralPanelX AS ?infoBoxX).
+  BIND(?centralImageY AS ?infoBoxY).
+#  BIND(?centralPanelWidth AS ?infoBoxWidth).
+  BIND(?centralPanelHeight AS ?infoBoxHeight).
+
+  BIND(?infoBoxY+?infoBoxFieldHeight AS ?infoBoxNameY).
+  BIND(?infoBoxY+2*?infoBoxFieldHeight AS ?infoBoxArtistY).
+  BIND(?infoBoxY+3*?infoBoxFieldHeight AS ?infoBoxArtFormY).
+  BIND(?infoBoxY+4*?infoBoxFieldHeight AS ?infoBoxArtGenreY).
+  BIND(?infoBoxY+5*?infoBoxFieldHeight AS ?infoBoxArtSubjectY).
+  BIND(?infoBoxY+6*?infoBoxFieldHeight AS ?infoBoxDateY).
+
+}
+''' .<#AreaFilters> a df:ConstructGraph ;df:name "AreaFilters" ;df:configTxt '''CONSTRUCT {
+  <#topBarArea> <#filter> <same-artist.rq>.
+  <#bottomBarArea> <#filter> <same-genre-form.rq>.
+  <#leftBarArea> <#filter> <same-genre.rq>.
+  <#rightBarArea> <#filter> <contemp.rq>.
+}
+WHERE {}
+''' .

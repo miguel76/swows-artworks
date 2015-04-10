@@ -4,5 +4,4 @@ SELECT DISTINCT ?relatedArtwork
 WHERE {
     ?relatedArtwork
         aw:artist/^aw:artist ?selectedArtwork.
-    OPTIONAL {?relatedArtwork aw:date_completed ?date}
-} ORDER BY ?date
+}

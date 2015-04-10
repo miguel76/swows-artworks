@@ -19,6 +19,13 @@
 		"133";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<construct>.
+<components/222322>
+	<http://www.swows.org/2013/09/pipeline#X>
+		"445";
+	<http://www.swows.org/2013/09/pipeline#Y>
+		"235";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<construct>.
 <components/22232>
 	<http://www.swows.org/2013/09/pipeline#X>
 		"680";

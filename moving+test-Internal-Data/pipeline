@@ -54,13 +54,35 @@
 	<http://www.swows.org/2013/09/pipeline#Color>
 		"Red";
 	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
-		<components/2223>;
+		<components/222322>;
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"Input";
 	<http://www.swows.org/2013/09/pipeline#Shape>
 		"Dot";
 	<http://www.swows.org/2013/09/pipeline#Type>
 		"FROM NAMED".
+<components/222322/selected>
+	<http://www.swows.org/2013/09/pipeline#Color>
+		"Red";
+	<http://www.swows.org/2013/09/pipeline#ConnectedComponentCode>
+		<components/2222>;
+	<http://www.swows.org/2013/09/pipeline#Name>
+		"Selected";
+	<http://www.swows.org/2013/09/pipeline#Shape>
+		"Dot";
+	<http://www.swows.org/2013/09/pipeline#Type>
+		"FROM NAMED".
+<components/222322>
+	<http://www.swows.org/2013/09/pipeline#ID>
+		"SelectTest";
+	<http://www.swows.org/2013/09/pipeline#InputList>
+		<components/222322/selected>;
+	<http://www.swows.org/2013/09/pipeline#Name>
+		"SelectTest";
+	<http://www.swows.org/2013/09/pipeline#Query>
+		"PREFIX fb: <http://rdf.freebase.com/ns/>\n\nSELECT ?x ?y\nWHERE {\n  VALUES (?x ?y) {\n  (3 12)\n  (1 4)\n  (2 8)\n  }\n} ORDER BY ?x\n";
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+		<http://www.swows.org/2013/09/pipeline#construct>.
 <components/22232>
 	<http://www.swows.org/2013/09/pipeline#ID>
 		"TuplesOutput";
@@ -69,7 +91,7 @@
 	<http://www.swows.org/2013/09/pipeline#Name>
 		"TuplesOutput";
 	<http://www.swows.org/2013/09/pipeline#Query>
-		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\nPREFIX html:  <http://www.w3.org/1999/xhtml#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nCONSTRUCT {\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#htmlElem> .\n\n  <#htmlElem>\n    a html:html ;\n    xml:hasChild <#body> .\n\n  <#body>\n    a html:body ;\n    xml:hasChild <#textArea> .\n\n  <#textArea>\n    a html:textarea ;\n    nn:style \"width: 100%; height:100%\";\n    xml:textContent ?text .\n\n}\nWHERE {\n\n  {\n  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)\n  WHERE {\n    BIND(STR(<>) AS ?baseStr) .\n    BIND(STRLEN(?baseStr) AS ?baseLen) .\n    GRAPH <#input> {\n      ?s ?p ?o .\n    } .\n    BIND(STR(?s) AS ?sStr).\n    BIND(CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>') AS ?sOut).\n    BIND(STR(?p) AS ?pStr).\n    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).\n    BIND(STR(?o) AS ?oStr).\n    BIND(IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('\"', STR(?o), '\"')) ) AS ?oOut).\n    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).\n  }\n  }\n \n  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).\n\n}\n";
+		"PREFIX nn:    <http://www.swows.org/xml/no-namespace#>\nPREFIX xml:   <http://www.swows.org/2013/07/xml-dom#>\nPREFIX svg:   <http://www.w3.org/2000/svg#>\nPREFIX xlink: <http://www.w3.org/1999/xlink#>\nPREFIX swi:   <http://www.swows.org/instance#>\nPREFIX html:  <http://www.w3.org/1999/xhtml#>\n\nPREFIX fb: <http://rdf.freebase.com/ns/>\nPREFIX dbpedia: <http://dbpedia.org/resource/>\nPREFIX dbp-ont: <http://dbpedia.org/ontology/>\nPREFIX umbel-sc: <http://umbel.org/umbel/sc/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ff: <http://factforge.net/>\nPREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>\n\nCONSTRUCT {\n\n  <#svgDoc>\n    a xml:Document ;\n    xml:hasChild <#htmlElem> .\n\n  <#htmlElem>\n    a html:html ;\n    xml:hasChild <#body> .\n\n  <#body>\n    a html:body ;\n    xml:hasChild <#textArea> .\n\n  <#textArea>\n    a html:textarea ;\n    nn:style \"width: 100%; height:100%\";\n    xml:textContent ?text .\n\n}\nWHERE {\n\n  {\n  SELECT (GROUP_CONCAT(?tripleStr; separator='\\n') AS ?triplesStr)\n  WHERE {\n    BIND(STR(<>) AS ?baseStr) .\n    BIND(STRLEN(?baseStr) AS ?baseLen) .\n    GRAPH <#input> {\n      ?s ?p ?o .\n    } .\n    BIND(STR(?s) AS ?sStr).\n    BIND(IF(isBLANK(?s), CONCAT('_:',afn:bnode(?s)), CONCAT('<', IF(SUBSTR(?sStr,0,?baseLen+1)=?baseStr,SUBSTR(?sStr,?baseLen+1),?sStr), '>')) AS ?sOut).\n    BIND(STR(?p) AS ?pStr).\n    BIND(CONCAT('<', IF(SUBSTR(?pStr,0,?baseLen+1)=?baseStr,SUBSTR(?pStr,?baseLen+1),?pStr), '>') AS ?pOut).\n    BIND(STR(?o) AS ?oStr).\n    BIND(IF(isBLANK(?o), CONCAT('_:',afn:bnode(?o)), IF(isIRI(?o), CONCAT('<', IF(SUBSTR(?oStr,0,?baseLen+1)=?baseStr,SUBSTR(?oStr,?baseLen+1),?oStr), '>'), IF(isNumeric(?o), STR(?o), CONCAT('\"', STR(?o), '\"'))) ) AS ?oOut).\n    BIND(CONCAT(?sOut, ' ', ?pOut, ' ', ?oOut, '.') AS ?tripleStr).\n  }\n  }\n \n  BIND(CONCAT('BASE <',STR(<>),'>\\n',COALESCE(?triplesStr,'')) AS ?text).\n\n}\n";
 	<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
 		<http://www.swows.org/2013/09/pipeline#construct>.
 <components/2223>
